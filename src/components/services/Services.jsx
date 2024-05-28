@@ -36,8 +36,7 @@ const Services = () => {
     >
       <motion.div className="textContainer" variants={variants}>
         <p>
-          시골 vs 도시
-          <br /> 인구 특성
+        인구 특성 시각화
         </p>
         <hr />
       </motion.div>

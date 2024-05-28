@@ -31,7 +31,7 @@ const sliderVariants = {
     x: "-220%",
     transition: {
       repeat: Infinity,
-      repeatType:"mirror",
+      repeatType: "mirror",
       duration: 20,
     },
   },
@@ -47,18 +47,19 @@ const Hero = () => {
           initial="initial"
           animate="animate"
         >
-          <motion.h2 variants={textVariants}>문제 제기</motion.h2>
-          <motion.h1 variants={textVariants}>
-          "여러분은 지방에서 병원 접근성 부족으로 생명을 잃는 노인들이 얼마나 많은지 아십니까?"
+          <motion.h2 className="jua-regular" variants={textVariants}>문제 제기</motion.h2>
+          <motion.h1 className="black-han-sans-regular" variants={textVariants}>
+            "여러분은 현재의 의료 접근성 평가 방식이 과연 정확하다고 생각하시나요?"
           </motion.h1>
-          <motion.h3 variants={textVariants}>병원에 도착하지 못해 생명을 잃는 분들의 숫자는 생각보다 많습니다. 이러한 현실을 바꾸기 위해, 그리고 모든 사람이 적절한 의료 서비스를 받을 수 있도록, 저희는 의료 접근성에 대한 심도 있는 분석을 통해 이 심각성을 전하려고 합니다. 지금부터 저희의 여정을 함께해 주세요.</motion.h3>
+          <motion.h3 className="noto-sans-kr-regular" variants={textVariants}>
+            현재의 의료 접근성 평가 방식은 인구 100만 명당 병원 수를 기준으로 삼고 있습니다. 그러나 이러한 방식은 몇 가지 중요한 문제점을 가지고 있습니다. 첫째, 병원의 종류를 고려하지 않습니다. 예를 들어, 고령화가 많이 진행된 지역에 산부인과나 소아과 병원이 많아도, 병원 수만으로는 의료 접근성이 높다고 잘못 평가될 수 있습니다. 둘째, 인구의 연령 구조를 반영하지 않습니다. 고령화 지역에서는 노인들이 주로 이용하는 의료 서비스가 더 필요합니다. 따라서 우리는 이러한 문제를 해결하고 지역 의료 접근성을 더욱 세심하게 평가하기 위해 두 가지 보완점을 제시하려 합니다.
+          </motion.h3>
           <motion.img
             variants={textVariants}
             animate="scrollButton"
             src="/scroll.png"
             alt=""
           />
-          
         </motion.div>
       </div>
       <motion.div
@@ -69,7 +70,6 @@ const Hero = () => {
       >
         Wacky Wombat
       </motion.div>
-
     </div>
   );
 };
