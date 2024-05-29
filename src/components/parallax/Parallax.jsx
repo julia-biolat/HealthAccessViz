@@ -25,7 +25,7 @@ const Parallax = ({ type }) => {
       }}
     >
       <motion.h1 style={{ y: yText }}>
-        {type === "services" ? "한국의 인구 특성" : "질병별 특성 분석"}
+        {type === "services" ? "한국의 인구 특성" : type === "portfolio1" ? "인구특성별 자주 걸리는 질병" : "의료접근성"}
       </motion.h1>
       <motion.div className="mountains"></motion.div>
       <motion.div

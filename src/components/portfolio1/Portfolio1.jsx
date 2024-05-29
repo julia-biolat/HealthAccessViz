@@ -1,51 +1,42 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./portfolio1.scss";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import * as d3 from 'd3';
+import * as d3Slider from 'd3-simple-slider';
+import SlideChart from "./SlideChart";
 
 const items = [
   {
     id: 1,
-    title: "연령대 별 질병 비율",
-    img: "https://images.pexels.com/photos/18073372/pexels-photo-18073372/free-photo-of-young-man-sitting-in-a-car-on-a-night-street.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores ab id ad nesciunt quo aut corporis modi? Voluptate, quos sunt dolorum facilis, id eum sequi placeat accusantium saepe eos laborum.",
+    title: "Infants",
+    path: "../../../data/infants.csv"
   },
   {
     id: 2,
-    title: "인구 특성 + 질병 별 지역 간 의료 접근성 비율 비교",
-    img: "https://images.pexels.com/photos/18023772/pexels-photo-18023772/free-photo-of-close-up-of-a-person-holding-a-wristwatch.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load",
-    desc: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolores ab id ad nesciunt quo aut corporis modi? Voluptate, quos sunt dolorum facilis, id eum sequi placeat accusantium saepe eos laborum.",
+    title: "Adolescents",
+    path: "../../../data/adolescents.csv"
+  },
+  {
+    id: 3,
+    title: "Middle-aged",
+    path: "../../../data/middle.csv"
+  },
+  {
+    id: 4,
+    title: "Young Adults",
+    path: "../../../data/young.csv"
+  },
+  {
+    id: 5,
+    title: "Seniors",
+    path: "../../../data/seniors.csv"
   }
 ];
 
-const Single = ({ item }) => {
+const Portfolio1 = () => {
   const ref = useRef();
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [-300, 300]);
-
-  return (
-    <section >
-      <div className="container">
-        <div className="wrapper">
-          <div className="imageContainer" ref={ref}>
-            <img src={item.img} alt="" />
-          </div>
-          <motion.div className="textContainer" style={{y}}>
-            <h2>{item.title}</h2>
-            <p>{item.desc}</p>
-            <button>알아서 없애든 말든 선택</button>
-          </motion.div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const Portfolio = () => {
-  const ref = useRef();
+  const sliderRef = useRef();
+  const isSliderInitialized = useRef(false); // 슬라이더 초기화 여부를 저장
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -57,17 +48,66 @@ const Portfolio = () => {
     damping: 30,
   });
 
+  const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
+
+  const [chartData, setChartData] = useState([]);
+  const [selectedPath, setSelectedPath] = useState(items[0].path); // Default to the first path
+
+  useEffect(() => {
+    // CSV 데이터를 불러와서 상태로 설정
+    d3.csv(selectedPath).then((data) => {
+      // 데이터 변환: value를 숫자로 변환
+      data.forEach(d => {
+        d.value = +d.value;
+      });
+      setChartData(data);
+    });
+  }, [selectedPath]); // selectedPath가 변경될 때마다 재실행
+
+  useEffect(() => {
+    if (!isSliderInitialized.current) {
+      const slider = d3Slider.sliderBottom()
+        .min(0)
+        .max(items.length - 1)
+        .step(1)
+        .width(400)
+        .tickFormat(i => items[i].title)
+        .ticks(items.length)
+        .default(0)
+        .on('onchange', val => {
+          setSelectedPath(items[val].path);
+        });
+
+      d3.select(sliderRef.current)
+        .append('svg')
+        .attr('width', 500)
+        .attr('height', 100)
+        .append('g')
+        .attr('transform', 'translate(30,30)')
+        .call(slider);
+
+      isSliderInitialized.current = true; // 슬라이더가 초기화되었음을 표시
+    }
+  }, [items]);
+
   return (
     <div className="portfolio" ref={ref}>
       <div className="progress">
         <h1>연령대별 질병 분석</h1>
         <motion.div style={{ scaleX }} className="progressBar"></motion.div>
       </div>
-      {items.map((item) => (
-        <Single item={item} key={item.id} />
-      ))}
+      <section>
+        <div className="container">
+          <div className="wrapper">
+            <motion.div className="textContainer" style={{ y }}>
+              <SlideChart data={chartData} />
+              <div ref={sliderRef}></div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
 
-export default Portfolio;
+export default Portfolio1;
