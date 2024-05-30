@@ -1,0 +1,10 @@
+.korea-map-container {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+  position: relative; /* Ensure non-static position */
+
+  svg {
+    border: 1px solid #ccc;
+  }
+}
