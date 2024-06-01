@@ -1,107 +1,82 @@
-import { useEffect, useRef, useState } from "react";
-import "./portfolio1.scss";
+import { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useSpring, useTransform } from "framer-motion";
-import * as d3 from 'd3';
-import * as d3Slider from 'd3-simple-slider';
-import SlideChart from "./SlideChart";
-
-const items = [
-  {
-    id: 1,
-    title: "Infants",
-    path: "../../../data/infants.csv"
-  },
-  {
-    id: 2,
-    title: "Adolescents",
-    path: "../../../data/adolescents.csv"
-  },
-  {
-    id: 3,
-    title: "Middle-aged",
-    path: "../../../data/middle.csv"
-  },
-  {
-    id: 4,
-    title: "Young Adults",
-    path: "../../../data/young.csv"
-  },
-  {
-    id: 5,
-    title: "Seniors",
-    path: "../../../data/seniors.csv"
-  }
-];
+import * as d3 from "d3";
+import SliderComponent from "./SliderComponent";
+import StackedBarChart from "./StackedBarChart";
+import RankChangeChart from "./RankChangeChart";
+import "./portfolio1.scss";
 
 const Portfolio1 = () => {
-  const ref = useRef();
-  const sliderRef = useRef();
-  const isSliderInitialized = useRef(false); // 슬라이더 초기화 여부를 저장
+  const [selectedData, setSelectedData] = useState([]);
+  const [previousData, setPreviousData] = useState([]);
+  const [stackOrder, setStackOrder] = useState('male-first');
+  const ref = useRef(null);
+  let beforeData = [];
 
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["end end", "start start"],
-  });
+  const sortData = (data, order) => {
+    return data.sort((a, b) => d3.descending(+a[order], +b[order]));
+  };
 
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-  });
+  const handleAgeGroupChange = (ageGroup) => {
+    fetch(ageGroup.path)
+      .then((response) => response.text())
+      .then((csvData) => {
+        let parsedData = d3.csvParse(csvData);
 
+        let sortedData = sortData(parsedData, stackOrder === 'male-first' ? '남' : '여');
+
+        const topItems = sortedData
+          .slice(0, 15)
+          .map((d) => ({
+            항목: d["항목"],
+            남: +d["남"],
+            여: +d["여"],
+            총: +d["총"],
+            비율: (+d["비율(%)"]).toFixed(2)
+          }));
+
+        setPreviousData(beforeData);
+        setSelectedData(topItems);
+        beforeData = parsedData;
+      })
+      .catch((error) => console.error("Error loading data:", error));
+  };
+
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   const y = useTransform(scrollYProgress, [0, 1], [0, 300]);
 
-  const [chartData, setChartData] = useState([]);
-  const [selectedPath, setSelectedPath] = useState(items[0].path); // Default to the first path
+  const handleStackOrderChange = (order) => {
+    setStackOrder(order);
+    setPreviousData(selectedData);
+    setSelectedData(sortData([...selectedData], order === 'male-first' ? '남' : '여'));
+  };
 
   useEffect(() => {
-    // CSV 데이터를 불러와서 상태로 설정
-    d3.csv(selectedPath).then((data) => {
-      // 데이터 변환: value를 숫자로 변환
-      data.forEach(d => {
-        d.value = +d.value;
-      });
-      setChartData(data);
-    });
-  }, [selectedPath]); // selectedPath가 변경될 때마다 재실행
-
-  useEffect(() => {
-    if (!isSliderInitialized.current) {
-      const slider = d3Slider.sliderBottom()
-        .min(0)
-        .max(items.length - 1)
-        .step(1)
-        .width(400)
-        .tickFormat(i => items[i].title)
-        .ticks(items.length)
-        .default(0)
-        .on('onchange', val => {
-          setSelectedPath(items[val].path);
-        });
-
-      d3.select(sliderRef.current)
-        .append('svg')
-        .attr('width', 500)
-        .attr('height', 100)
-        .append('g')
-        .attr('transform', 'translate(30,30)')
-        .call(slider);
-
-      isSliderInitialized.current = true; // 슬라이더가 초기화되었음을 표시
+    if (selectedData.length === 0) {
+      setPreviousData([]);
     }
-  }, [items]);
+  }, [selectedData]);
 
   return (
     <div className="portfolio" ref={ref}>
       <div className="progress">
-        <h1>연령대별 질병 분석</h1>
+        <h1>Age Group Disease Analysis</h1>
         <motion.div style={{ scaleX }} className="progressBar"></motion.div>
       </div>
       <section>
         <div className="container">
           <div className="wrapper">
             <motion.div className="textContainer" style={{ y }}>
-              <SlideChart data={chartData} />
-              <div ref={sliderRef}></div>
+              <SliderComponent onAgeGroupChange={handleAgeGroupChange} />
+              <div className="controls">
+                <button onClick={() => handleStackOrderChange('male-first')}>남자 기준</button>
+                <button onClick={() => handleStackOrderChange('female-first')}>여자 기준</button>
+              </div>
+              <div className="charts">
+                <StackedBarChart data={selectedData} stackOrder={stackOrder} />
+                <RankChangeChart data={selectedData} previousData={previousData} />
+              </div>
             </motion.div>
           </div>
         </div>
