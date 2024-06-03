@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+
 const StackedBarChart = ({ data, stackOrder }) => {
   const svgRef = useRef();
   const [selectedItem, setSelectedItem] = useState(null);

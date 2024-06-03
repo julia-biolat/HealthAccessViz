@@ -4,6 +4,7 @@ import * as d3 from "d3";
 import SliderComponent from "./SliderComponent";
 import StackedBarChart from "./StackedBarChart";
 import RankChangeChart from "./RankChangeChart";
+import SankeyDiagram from "./SankeyDiagram"; // SankeyDiagram 가져오기
 import "./portfolio1.scss";
 
 const Portfolio1 = () => {
@@ -77,6 +78,15 @@ const Portfolio1 = () => {
                 <StackedBarChart data={selectedData} stackOrder={stackOrder} />
                 <RankChangeChart data={selectedData} previousData={previousData} />
               </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div className="container">
+          <div className="wrapper">
+            <motion.div className="textContainer" style={{ y }}>
+              <SankeyDiagram /> {/* Sankey 다이어그램 렌더링 */}
             </motion.div>
           </div>
         </div>
