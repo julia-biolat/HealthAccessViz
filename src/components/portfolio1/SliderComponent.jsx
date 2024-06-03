@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import * as d3Slider from 'd3-simple-slider';
+import './sliderComponent.scss'; // 슬라이더 스타일을 위한 CSS 파일 임포트
 
 const data = [
   { id: 1, title: "Infants", path: "/data/infants.csv" },
@@ -21,10 +22,15 @@ const SliderComponent = ({ onAgeGroupChange }) => {
         .min(0)
         .max(data.length - 1)
         .step(1)
-        .width(400)
+        .width(600)  // 슬라이더의 너비를 늘림
         .tickFormat(i => data[i].title)
         .ticks(data.length)
         .default(0)  // 기본값을 "Infants"로 설정
+        .handle(
+          d3.symbol()
+            .type(d3.symbolCircle)
+            .size(200) // 핸들의 크기를 증가
+        )
         .on('onchange', val => {
           setSelectedAgeGroup(data[val]);
           onAgeGroupChange(data[val]);
@@ -32,10 +38,10 @@ const SliderComponent = ({ onAgeGroupChange }) => {
 
       d3.select(sliderRef.current)
         .append('svg')
-        .attr('width', 500)
+        .attr('width', 700)
         .attr('height', 100)
         .append('g')
-        .attr('transform', 'translate(30,30)')
+        .attr('transform', 'translate(50,30)')
         .call(slider);
 
       isSliderInitialized.current = true;
@@ -45,8 +51,8 @@ const SliderComponent = ({ onAgeGroupChange }) => {
   }, [onAgeGroupChange]);
 
   return (
-    <div>
-      <h4>Selected Age Group: {selectedAgeGroup.title}</h4>
+    <div className="slider-container">
+      <h3>Selected Age Group: {selectedAgeGroup.title}</h3>
       <div ref={sliderRef}></div>
     </div>
   );

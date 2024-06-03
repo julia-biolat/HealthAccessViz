@@ -1,45 +1,98 @@
+@import "../../app.scss";
+
 .portfolio {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  margin-top: 20px;  /* 추가: 전체 컨테이너를 화면 위로 이동 */
-}
-
-.progress {
-  width: 100%;
-  margin-bottom: 50px;
   position: relative;
-}
 
-.progressBar {
-  height: 5px;
-  background-color: #4caf50;
-  transform-origin: 50%;
-}
+  .progress {
+    position: sticky;
+    top: 0;
+    left: 0;
+    padding-top: 50px;
+    text-align: center;
+    color: orange;
+    font-size: 36px;
 
-.container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
+    @include mobile {
+      padding-top: calc(100vh - 100px);
+      font-size: 24px;
+    }
 
-.wrapper {
-  width: 800px;  /* 적절한 너비를 설정 */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+    .progressBar {
+      height: 10px;
+      background-color: white;
+    }
+  }
 
-.textContainer {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+  .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
 
-.charts {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
+    .wrapper {
+      max-width: 1366px;
+      width: 100%;
+      height: 100%;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center; /* 중앙 정렬 */
+      gap: 20px; /* 간격 조정 */
+
+      @include mobile {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .controls {
+        width: 100%;
+        display: flex;
+        justify-content: center; /* 왼쪽 정렬 */
+        margin-top: 100px; /* 맨 위로부터의 간격 조정 */
+        margin-bottom: -40px; /* 슬라이더와 버튼 사이의 간격 */
+        gap: 10px;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: flex-start; /* 버튼 왼쪽 정렬 */
+        margin-bottom: -40px; /* 차트와의 간격 조정 */
+        margin-left: 180px; /* 버튼 그룹을 오른쪽으로 10px 이동 */
+        
+        button {
+          padding: 5px 5px !important; /* 버튼 크기 조정 */
+          width: 50px !important; /* 버튼 최소 가로 길이 설정 */
+          border: 1px solid white !important;
+          border-radius: 3px !important;
+          background-color: transparent !important; /* 버튼 배경색 투명으로 설정 */
+          color: white !important;
+          cursor: pointer !important;
+          font-weight: 500 !important;
+          font-family: "Noto Sans KR", sans-serif !important;
+          margin-right: 5px !important; /* 버튼 간격 줄임 */
+
+          &:last-child {
+            margin-right: 0 !important;
+          }
+
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important; /* 호버 시 약간의 배경색 */
+          }
+        }
+      }
+
+      .charts {
+        display: flex;
+        flex-direction: row; /* 가로로 배치 */
+        align-items: center;
+        justify-content: space-around;
+        width: 100%;
+        @include mobile {
+          flex-direction: column; /* 모바일에서는 세로로 배치 */
+        }
+      }
+    }
+  }
 }

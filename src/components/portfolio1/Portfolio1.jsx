@@ -5,12 +5,14 @@ import SliderComponent from "./SliderComponent";
 import StackedBarChart from "./StackedBarChart";
 import RankChangeChart from "./RankChangeChart";
 import SankeyDiagram from "./SankeyDiagram"; // SankeyDiagram 가져오기
+import Modal from "./Modal"; // Modal 컴포넌트 가져오기
 import "./portfolio1.scss";
 
 const Portfolio1 = () => {
   const [selectedData, setSelectedData] = useState([]);
   const [previousData, setPreviousData] = useState([]);
   const [stackOrder, setStackOrder] = useState('male-first');
+  const [selectedItem, setSelectedItem] = useState(null); // 모달창을 위한 상태 추가
   const ref = useRef(null);
   let beforeData = [];
 
@@ -62,20 +64,22 @@ const Portfolio1 = () => {
   return (
     <div className="portfolio" ref={ref}>
       <div className="progress">
-        <h1>Age Group Disease Analysis</h1>
+        <h1>인구특성별 질병</h1>
         <motion.div style={{ scaleX }} className="progressBar"></motion.div>
       </div>
       <section>
         <div className="container">
           <div className="wrapper">
             <motion.div className="textContainer" style={{ y }}>
-              <SliderComponent onAgeGroupChange={handleAgeGroupChange} />
               <div className="controls">
-                <button onClick={() => handleStackOrderChange('male-first')}>남자 기준</button>
-                <button onClick={() => handleStackOrderChange('female-first')}>여자 기준</button>
+                <SliderComponent onAgeGroupChange={handleAgeGroupChange} />
+              </div>
+              <div className="buttons">
+                <button onClick={() => handleStackOrderChange('male-first')}>남</button>
+                <button onClick={() => handleStackOrderChange('female-first')}>여</button>
               </div>
               <div className="charts">
-                <StackedBarChart data={selectedData} stackOrder={stackOrder} />
+                <StackedBarChart data={selectedData} stackOrder={stackOrder} onBarClick={setSelectedItem} />
                 <RankChangeChart data={selectedData} previousData={previousData} />
               </div>
             </motion.div>
@@ -91,6 +95,7 @@ const Portfolio1 = () => {
           </div>
         </div>
       </section>
+      {selectedItem && <Modal selectedItem={selectedItem} onClose={() => setSelectedItem(null)} />}
     </div>
   );
 };
