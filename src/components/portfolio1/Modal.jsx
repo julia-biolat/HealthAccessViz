@@ -19,7 +19,7 @@ const Modal = ({ selectedItem, onClose }) => {
       { name: "Other", value: 100 - selectedItem.비율 }
     ]);
 
-    const g = modalSvg.append("g").attr("transform", `translate(${width / 2 }, ${height / 2 - 50})`);;
+    const g = modalSvg.append("g").attr("transform", `translate(${width / 2 }, ${height / 2 - 50})`);
   
   // 파이 차트 그리기
   g.selectAll("path")
