@@ -30,7 +30,9 @@ const Portfolio1 = () => {
 
         const topItems = sortedData
           .slice(0, 15)
-          .map((d) => ({
+          .map((d, index) => ({
+            연령층: ageGroup.title,
+            순위: index,
             항목: d["항목"],
             남: +d["남"],
             여: +d["여"],
