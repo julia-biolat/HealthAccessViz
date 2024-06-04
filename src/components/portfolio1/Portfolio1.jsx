@@ -4,7 +4,7 @@ import * as d3 from "d3";
 import SliderComponent from "./SliderComponent";
 import StackedBarChart from "./StackedBarChart";
 import RankChangeChart from "./RankChangeChart";
-import SankeyDiagram from "./SankeyDiagram"; // SankeyDiagram 가져오기
+import Sankey from "./Sankey"; // SankeyDiagram 가져오기
 import Modal from "./Modal"; // Modal 컴포넌트 가져오기
 import "./portfolio1.scss";
 
@@ -29,7 +29,7 @@ const Portfolio1 = () => {
         let sortedData = sortData(parsedData, stackOrder === 'male-first' ? '남' : '여');
 
         const topItems = sortedData
-          .slice(0, 15)
+          .slice(0, 12)
           .map((d, index) => ({
             연령층: ageGroup.title,
             순위: index,
@@ -92,7 +92,7 @@ const Portfolio1 = () => {
         <div className="container">
           <div className="wrapper">
             <motion.div className="textContainer" style={{ y }}>
-              <SankeyDiagram /> {/* Sankey 다이어그램 렌더링 */}
+             <Sankey />{/* Sankey 다이어그램 렌더링 */}
             </motion.div>
           </div>
         </div>

@@ -4,8 +4,8 @@ import "./rankChangeChart.scss";
 
 const RankChangeChart = ({ data, previousData }) => {
   const svgRef = useRef();
-  const height = 400;
-  const margin = { top: 0, right: 5, bottom: 5, left: 5 };
+  const height = 450;
+  const margin = { top: 0, right: 5, bottom: 0, left: 5 };
   const width = 250; // 박스의 너비를 설정
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const RankChangeChart = ({ data, previousData }) => {
       .scaleBand()
       .domain(data.map((d) => d.항목))
       .range([margin.top, height - margin.bottom])
-      .padding(0.4); // 패딩 값을 줄여 박스 크기를 키웁니다.
+      .padding(0.5); // 패딩 값을 줄여 박스 크기를 키웁니다.
 
     const g = svg.append("g").attr("transform", `translate(${margin.left},0)`);
 
@@ -33,7 +33,7 @@ const RankChangeChart = ({ data, previousData }) => {
       .attr("class", "rank-group")
       .attr("transform", d => {
         const previousRank = previousRanks[d.항목];
-        if (previousRank !== undefined && previousRank < 15) {
+        if (previousRank !== undefined && previousRank < 12) {
           return `translate(0, ${yScale(data[previousRank].항목)})`;
         } else {
           return `translate(0, ${height})`;
