@@ -6,8 +6,8 @@ const Sankey = () => {
   const svgRef = useRef();
   const [data, setData] = useState({ nodes: [], links: [] });
   const margin = { top: 50, right: 140, bottom: 13, left: 140 };
-  const height = 700;
-  const width = 1300;
+  const height = 800;
+  const width = 1400;
   let isMouseOver = false;
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const Sankey = () => {
 
     const sankeyGenerator = sankey()
       .nodeWidth(15)
-      .nodePadding(15)
+      .nodePadding(20)
       .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
       .nodeId(d => d.id)
       .nodeAlign(sankeyCenter);
@@ -89,7 +89,7 @@ const Sankey = () => {
       links: data.links.map(d => Object.assign({}, d)),
     });
 
-    const margin_top = 80;
+    const margin_top = 120;
     const move_x = 150;
 
     // Depth 0 노드를 id 순서대로 정렬하여 y 위치 설정
@@ -283,7 +283,7 @@ const Sankey = () => {
       .attr("font-size", 12)
       .attr("fill", "white")
       .text(d => d.name);
-  }, [data, isMouseOver]);
+  }, [data]);
 
   return <svg ref={svgRef} width={width} height={height}></svg>;
 };

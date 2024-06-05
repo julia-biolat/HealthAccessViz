@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import './stackedBarChart.scss';  // CSS 파일 임포트
 
-const StackedBarChart = ({ data, stackOrder, onBarClick }) => { // onBarClick 추가
+const StackedBarChart = ({ data, stackOrder, onBarClick, previousData}) => { // onBarClick 추가
   const svgRef = useRef();
   const [selectedItem, setSelectedItem] = useState(null);
   const height = 450;
   const margin = { top: 20, right: 0, bottom: 20, left: 200 };
-  const width = 900 - margin.left - margin.right;
+  const width = 1100 - margin.left - margin.right;
 
   const handleClick = (item) => {
     setSelectedItem(item);
@@ -24,6 +24,11 @@ const StackedBarChart = ({ data, stackOrder, onBarClick }) => { // onBarClick �
 
     const y = d3.scaleBand()
       .domain(data.map(d => d.항목))
+      .range([margin.top, height - margin.bottom])
+      .padding(0.1);
+    
+    const prev = d3.scaleBand()
+      .domain(previousData.map(d => d.항목))
       .range([margin.top, height - margin.bottom])
       .padding(0.1);
 
@@ -59,6 +64,28 @@ const StackedBarChart = ({ data, stackOrder, onBarClick }) => { // onBarClick �
       .on("click", (event, d) => handleClick(d));
 
     const drawBars = (group, key, delayMultiplier) => {
+
+      if(previousData.length !== 0 && previousData[0].항목 === data[0].항목){
+        return group.selectAll(`.${key}-rect`)
+        .data(d => {
+          const barData = series.find(s => s.key === key).find(v => v.data.항목 === d.항목);
+          return [{ key, value: barData, data: d}];
+        })
+        .enter()
+        .append("rect")
+        .attr("class", `${key}-rect`)
+        .attr("x", d => x(d.value[0]))
+        .attr("y", d => prev(d.data.항목))
+        .attr("height", y.bandwidth())
+        .attr("width", d => x(d.value[1]) - x(d.value[0]))
+        .attr("fill", color(key))
+        .attr("stroke", "rgba(255, 255, 255, 0.4)")
+        .attr("stroke-width", 1) // 경계 두께를 1로 설정
+        .transition() // 트랜지션 추가
+        .duration(800)
+        .attr("y", d => y(d.data.항목));
+      }
+
       return group.selectAll(`.${key}-rect`)
         .data(d => {
           const barData = series.find(s => s.key === key).find(v => v.data.항목 === d.항목);
@@ -105,8 +132,20 @@ const StackedBarChart = ({ data, stackOrder, onBarClick }) => { // onBarClick �
       .duration(300)
       .style("opacity", 1); // 최종 투명도를 1로 설정
 
-    // 카테고리 텍스트 애니메이션 추가
-    groups.append("text")
+    if(previousData.length !== 0 && previousData[0].항목 === data[0].항목){
+      // 카테고리 텍스트 애니메이션 추가
+      groups.append("text")
+      .attr("x", margin.left - 10)
+      .attr("y", d => prev(d.항목) + y.bandwidth() / 2)
+      .attr("dy", "0.35em")
+      .attr("text-anchor", "end")
+      .attr("fill", "#ffffff")
+      .text(d => d.항목)
+      .transition() // 트랜지션 추가
+      .duration(800)
+      .attr("y", d => y(d.항목) + y.bandwidth() / 2)
+    }else{
+      groups.append("text")
       .attr("x", margin.left - 10)
       .attr("y", d => y(d.항목) + y.bandwidth() / 2)
       .attr("dy", "0.35em")
@@ -117,6 +156,7 @@ const StackedBarChart = ({ data, stackOrder, onBarClick }) => { // onBarClick �
       .transition() // 트랜지션 추가
       .duration(800)
       .style("opacity", 1); // 최종 투명도를 1로 설정
+    }
 
     // x축 추가
     svg.append("g")
@@ -131,7 +171,7 @@ const StackedBarChart = ({ data, stackOrder, onBarClick }) => { // onBarClick �
 
   return (
     <div className="rowsContainer">
-      <svg ref={svgRef} width={850} height={450}></svg>
+      <svg ref={svgRef} width={1000} height={450}></svg>
       <p className="source-text"> 출처:국민관심질병통계 2023년 성별/연령10세구간별 (단위: 명) </p>
     </div>
   );

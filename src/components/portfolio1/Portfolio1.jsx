@@ -65,7 +65,7 @@ const Portfolio1 = () => {
   return (
     <div className="portfolio" ref={ref}>
       <div className="progress">
-        <h1>인구특성별 질병</h1>
+        <h1>인구 특성별 주요 질병 분석</h1>
         <motion.div style={{ scaleX }} className="progressBar"></motion.div>
       </div>
       <section>
@@ -80,7 +80,7 @@ const Portfolio1 = () => {
                 <button onClick={() => handleStackOrderChange('female-first')}>여</button>
               </div>
               <div className="charts">
-                <StackedBarChart data={selectedData} stackOrder={stackOrder} onBarClick={setSelectedItem} />
+                <StackedBarChart data={selectedData} stackOrder={stackOrder} onBarClick={setSelectedItem} previousData={previousData} />
                 <RankChangeChart data={selectedData} previousData={previousData} />
               </div>
             </motion.div>

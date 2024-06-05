@@ -51,15 +51,15 @@
         display: flex;
         justify-content: center; /* 왼쪽 정렬 */
         margin-top: 100px; /* 맨 위로부터의 간격 조정 */
-        margin-bottom: -40px; /* 슬라이더와 버튼 사이의 간격 */
+        margin-bottom: 20px; /* 슬라이더와 버튼 사이의 간격 */
         gap: 10px;
       }
 
       .buttons {
         display: flex;
         justify-content: flex-start; /* 버튼 왼쪽 정렬 */
-        margin-bottom: -40px; /* 차트와의 간격 조정 */
-        margin-left: 180px; /* 버튼 그룹을 오른쪽으로 10px 이동 */
+        margin-bottom: -10px; /* 차트와의 간격 조정 */
+        margin-left: 228px; /* 버튼 그룹을 오른쪽으로 10px 이동 */
         
         button {
           padding: 5px 5px !important; /* 버튼 크기 조정 */
