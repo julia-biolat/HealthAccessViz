@@ -1,11 +1,23 @@
-.korea-map-container {
+.map-container {
     display: flex;
     justify-content: space-between;
-    margin: 20px;
+    margin: 10px;
+    margin-bottom: 30px;
     position: relative; /* Ensure non-static position */
-  
+    height:80%;
     svg {
       border: 1px solid #ccc;
     }
   }
   
+  .modebutton {
+    padding: 5px 5px !important; /* 버튼 크기 조정 */
+    width: 100px !important; /* 버튼 최소 가로 길이 설정 */
+    border: 1px solid white !important;
+    border-radius: 3px !important;
+    background-color: orange !important; /* 버튼 배경색 투명으로 설정 */
+    cursor: pointer !important;
+    font-weight: 500 !important;
+    font-family: "Noto Sans KR", sans-serif !important;
+    margin-right: 5px !important; /* 버튼 간격 줄임 */
+  } 

@@ -23,7 +23,6 @@ const Portfolio2 = () => {
   const [selectedDiseases, setSelectedDiseases] = useState([]);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState(null);
 
-
   const handleRegionChange = (region) => {
     setSelectedRegion(region);
   };
@@ -42,28 +41,19 @@ const Portfolio2 = () => {
         <h1>의료 접근성 분석</h1>
         <motion.div style={{ scaleX }} className="progressBar"></motion.div>
       </div>
-
-      <section className>
+      <section>
         <div className="container">
           <div className="wrapper">
-          <motion.div className="text-container">
+            <motion.div className="text-container">
             </motion.div>
-            <div className="Sliders">
-              <SliderAge onAgeGroupChange={handleAgeGroupChange} />
+            <div className="Controller">
+              
+                <SliderAge onAgeGroupChange={handleAgeGroupChange} />
+                <RegionSelector onRegionChange={handleRegionChange} />
+                <DiseaseSelector onDiseaseChange={handleDiseaseChange} />
+              
             </div>
-
-            <div className="Selectors">
-              <RegionSelector onRegionChange={handleRegionChange} />
-              <DiseaseSelector onDiseaseChange={handleDiseaseChange} />
-            </div>
-          </div>
-          
-          <div className="map-container">
-          <motion.div className="text-container">
-            </motion.div>
-            <div className="map-section">
-              <Map  />
-            </div>
+            <Map />
           </div>
         </div>
       </section>
