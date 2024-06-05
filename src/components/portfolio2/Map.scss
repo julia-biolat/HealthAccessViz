@@ -1,46 +1,80 @@
 .map-container {
-    display: flex;
-    justify-content: space-between;
-    margin: 10px;
-    margin-bottom: 30px;
-    position: relative; /* Ensure non-static position */
-    svg {
-      border: 1px solid #ccc;
-    }
-  }
-  
-  .modebutton {
-    padding: 5px 5px !important; /* 버튼 크기 조정 */
-    width: 100px !important; /* 버튼 최소 가로 길이 설정 */
-    border: 1px solid white !important;
-    border-radius: 3px !important;
-    background-color: orange !important; /* 버튼 배경색 투명으로 설정 */
-    cursor: pointer !important;
-    font-weight: 500 !important;
-    font-family: "Noto Sans KR", sans-serif !important;
-    margin-right: 5px !important; /* 버튼 간격 줄임 */
-  } 
-  
-  /* Add this to your Map.scss file */
-  .map .info.legend {
-    text-align: left;
-    background-color: white;
-    color: black;
-  }
-  
-  .map .info.legend h4 {
-    margin-bottom: 5px;
-  }
-  
-  .map .info.legend i {
-    width: 18px;
-    height: 18px;
-    float: left;
-    margin-right: 8px;
-    opacity: 1;
-  }
-  
-  .map .info.legend div {
-    clear: both;
-  }
-  
+  display: flex;
+  height:500px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+.report-box {
+  margin-left: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.report-box h4 {
+  margin-top: 0;
+}
+
+.report-box table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.report-box table, .report-box th, .report-box td {
+  border: 1px solid #ddd;
+}
+
+.report-box th, .report-box td {
+  padding: 8px;
+  text-align: left;
+}
+
+.report-box th {
+  background-color: #f2f2f2;
+}
+
+
+.method-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-right: 10px;
+  padding: 10px;
+  border-right: 1px solid #ccc;
+}
+
+.method-buttons button {
+  margin-bottom: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.leaflet-container {
+  flex-grow: 1;
+}
+
+.info.legend {
+  text-align: left;
+  background-color: white;
+  color: black;
+  padding: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+}
+
+.info.legend h4 {
+  margin-bottom: 5px;
+}
+
+.info.legend i {
+  width: 18px;
+  height: 18px;
+  float: left;
+  margin-right: 8px;
+  opacity: 1;
+}
+
+.info.legend div {
+  clear: both;
+}

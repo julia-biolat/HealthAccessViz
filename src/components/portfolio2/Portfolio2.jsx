@@ -44,6 +44,15 @@ const Portfolio2 = () => {
         <motion.div style={{ scaleX }} className="progressBar"></motion.div>
       </div>
       <section>
+      <div className="container">
+          <div className="wrapper">
+            <motion.div className="text-container">
+              인구 특성을 고려하느냐 안 하느냐는 의료 접근성 지수 평가에 매우 중요한 요소이다.
+            </motion.div>
+          </div>
+        </div>
+      </section>
+      <section>
         <div className="container">
           <div className="wrapper">
             <motion.div className="text-container">
