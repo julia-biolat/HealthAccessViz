@@ -79,14 +79,22 @@ const Modal = ({ selectedItem, onClose }) => {
         .attr("y1", centroid[1])
         .attr("x2", inflexionPoint[0])
         .attr("y2", inflexionPoint[1])
-        .attr("stroke", "black");
+        .attr("stroke", "black")
+        .attr("opacity", 0)
+        .transition()
+        .delay(800)
+        .attr("opacity", 1);
 
       lineGroup.append("line")
         .attr("x1", inflexionPoint[0])
         .attr("y1", inflexionPoint[1])
         .attr("x2", labelPosX)
         .attr("y2", inflexionPoint[1])
-        .attr("stroke", "black");
+        .attr("stroke", "black")
+        .attr("opacity", 0)
+        .transition()
+        .delay(800)
+        .attr("opacity", 1);
 
       const label = labelGroup.append("text")
         .attr("x", labelPosX)
@@ -120,7 +128,7 @@ const Modal = ({ selectedItem, onClose }) => {
       .attr("fill", "white")
       .attr("class", "close")
       .style("cursor", "pointer")
-      .text("돌아가기")
+      .text("🔙 돌아가기")
       .on("click", onClose);
 
   // 설명 텍스트
@@ -151,7 +159,11 @@ description.forEach((part, i) => {
     .attr("x", i < 8 ? (i == 0 || i == 4 || i == 6 ? width / 2: null) : width/2)
     .attr("dy", i < 8 ? (i == 4 || i == 6 ? "1.2em" : 0) : i == 8 ? "1.8em":"1.2em")
     .attr("fill", part.highlight ? "yellow" : "white") // 특정 단어에 색상 적용
-    .text(part.text);
+    .text(part.text)
+    .attr("opacity", 0)
+        .transition()
+        .delay(500)
+        .attr("opacity", 1);
 });
 
   }, [selectedItem, onClose]);

@@ -34,17 +34,6 @@
   opacity: 1;
 }
 
-/* 기본적으로 숨겨진 회색 사각형 */
-.highlightRect {
-  opacity: 0;
-  fill: grey;
-}
-
-/* 행이 호버될 때 회색 사각형이 나타남 */
-.rowsContainer .row:hover .highlightRect {
-  opacity: 0.2;
-}
-
 /* 선택되지 않은 상태에서 낮은 불투명도 */
 .faded {
   opacity: 0.3 !important;

@@ -4,7 +4,6 @@ import * as d3 from "d3";
 import SliderComponent from "./SliderComponent";
 import StackedBarChart from "./StackedBarChart";
 import RankChangeChart from "./RankChangeChart";
-import Sankey from "./Sankey"; // SankeyDiagram 가져오기
 import Modal from "./Modal"; // Modal 컴포넌트 가져오기
 import "./portfolio1.scss";
 
@@ -39,7 +38,7 @@ const Portfolio1 = () => {
             총: +d["총"],
             비율: (+d["비율(%)"]).toFixed(2)
           }));
-
+        
         setPreviousData(beforeData);
         setSelectedData(topItems);
         beforeData = parsedData;
@@ -84,15 +83,6 @@ const Portfolio1 = () => {
                 <StackedBarChart data={selectedData} stackOrder={stackOrder} onBarClick={setSelectedItem} />
                 <RankChangeChart data={selectedData} previousData={previousData} />
               </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-      <section>
-        <div className="container">
-          <div className="wrapper">
-            <motion.div className="textContainer" style={{ y }}>
-             <Sankey />{/* Sankey 다이어그램 렌더링 */}
             </motion.div>
           </div>
         </div>
