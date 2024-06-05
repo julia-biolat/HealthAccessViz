@@ -24,7 +24,7 @@ const Parallax = ({ type }) => {
             : "linear-gradient(180deg, #111132, #505064)",
       }}
     >
-      <motion.h1 style={{ y: yText }}>
+      <motion.h1 className="jua-regular" style={{ y: yText }}>
         {type === "services" ? "한국의 인구 특성" : type === "portfolio1" ? "인구 특성별 질병 발병 경향" : "의료접근성"}
       </motion.h1>
       <motion.div className="mountains"></motion.div>

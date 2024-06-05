@@ -1,32 +1,32 @@
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import * as d3 from 'd3';
+import { motion } from "framer-motion";
 import "leaflet/dist/leaflet.css";
 import "./services.scss";
-import { motion } from "framer-motion";
 
-
-const positions = {
-  "서울특별시": [37.5665, 126.9780],
-  "부산광역시": [35.1796, 129.0756],
-  "대구광역시": [35.8722, 128.6018],
-  "인천광역시": [37.4563, 126.7052],
-  "광주광역시": [35.1595, 126.8526],
-  "대전광역시": [36.3504, 127.3845],
-  "울산광역시": [35.5397, 129.3114],
-  "세종특별자치시": [36.4875, 127.2817],
-  "경기도": [37.2636, 127.0286],
-  "강원도": [37.8228, 128.1555],
-  "충청북도": [36.6358, 127.4913],
-  "충청남도": [36.5184, 126.8000],
-  "전라북도": [35.7175, 127.1530],
-  "전라남도": [34.8160, 126.4629],
-  "경상북도": [36.5758, 128.5056],
-  "경상남도": [35.4606, 128.2132],
-  "제주특별자치도": [33.4996, 126.5312]
+const genderColors = { '남성': '#ADD8E6', '여성': '#FFB6C1' };
+const ageColors = {
+  '유아': '#f08080', // 0-9세
+  '청소년': '#db7093', // 10-19세
+  '청년': '#ffd700', // 20-29세, 30-39세
+  '중년': '#90ee90', // 40-49세, 50-59세
+  '노년': '#1e90ff' // 60-69세, 70-79세, 80-89세, 90-99세, 100세 이상
 };
 
-
+const ageGroupMapping = {
+  '0~9세': '유아',
+  '10~19세': '청소년',
+  '20~29세': '청년',
+  '30~39세': '청년',
+  '40~49세': '중년',
+  '50~59세': '중년',
+  '60~69세': '노년',
+  '70~79세': '노년',
+  '80~89세': '노년',
+  '90~99세': '노년',
+  '100세 이상': '노년'
+};
 
 const variants = {
   initial: {
@@ -48,11 +48,155 @@ const variants = {
 const Services = () => {
   const [region, setRegion] = useState(null);
   const [chartType, setChartType] = useState('gender');
+  const svgRef = useRef();
 
   const handleRegionClick = (region) => {
     setRegion(region);
   };
 
+  const data = chartType === 'age' ? ageData[region] : genderData[region];
+
+  useEffect(() => {
+    if (!region) return;
+
+    const svg = d3.select(svgRef.current);
+    svg.selectAll("*").remove();
+
+    const width = 1000;  // 그래프 크기 조절
+    const height = 500;
+    const margin = { top: 20, right: 30, bottom: 40, left: 100 };  // 그래프 크기 조절
+
+    const xScale = d3.scaleBand()
+      .domain(data.map(d => d.name))
+      .range([margin.left, width - margin.right])
+      .padding(0.2);
+
+    const yScale = d3.scaleLinear()
+      .domain([0, d3.max(data, d => d.인구수)])
+      .nice()
+      .range([height - margin.bottom, margin.top]);
+
+    const colorScale = chartType === 'gender' ?
+      d3.scaleOrdinal().domain(Object.keys(genderColors)).range(Object.values(genderColors)) :
+      d3.scaleOrdinal().domain(Object.keys(ageColors)).range(Object.values(ageColors));
+
+    const xAxis = d3.axisBottom(xScale).tickSize(0).tickPadding(10);
+    const yAxis = d3.axisLeft(yScale).ticks(5).tickSize(0).tickPadding(10);
+
+    svg.append("g")
+      .attr("transform", `translate(0, ${height - margin.bottom})`)
+      .call(xAxis)
+      .selectAll("text")
+      .style("font-size", chartType === 'gender' ? "20px" : "12px");
+
+    svg.append("g")
+      .attr("transform", `translate(${margin.left}, 0)`)
+      .call(yAxis)
+      .selectAll("text")
+      .style("font-size", "12px")
+      .style("fill", "white");
+
+    svg.append("text")
+      .attr("transform", `rotate(-90)`)
+      .attr("y", margin.left - 90)  // 인구수 수정
+      .attr("x", 0 - height / 2)
+      .attr("dy", "1em")
+      .style("text-anchor", "middle")
+      .style("fill", "white")
+      .text("인구수");
+
+    svg.selectAll(".bar")
+      .data(data)
+      .enter()
+      .append("rect")
+      .attr("class", "bar")
+      .attr("x", d => xScale(d.name))
+      .attr("y", height - margin.bottom)
+      .attr("width", xScale.bandwidth())
+      .attr("height", 0)
+      .attr("fill", d => colorScale(chartType === 'gender' ? d.name : ageGroupMapping[d.name]))
+      .attr("opacity", 0.7)
+      .transition()
+      .duration(800)
+      .attr("y", d => yScale(d.인구수))
+      .attr("height", d => yScale(0) - yScale(d.인구수));
+
+    svg.selectAll(".bar")
+      .on("click", (event, d) => {
+        const [x, y] = d3.pointer(event);
+        svg.selectAll(".tooltip").remove();
+        svg.append("rect")
+          .attr("class", "tooltip")
+          .attr("x", x - 60)
+          .attr("y", y - 40)
+          .attr("width", 120)
+          .attr("height", 30)
+          .attr("fill", "rgba(0, 0, 0, 0.7)")
+          .attr("rx", 5)
+          .attr("ry", 5);
+
+        svg.append("text")
+          .attr("class", "tooltip")
+          .attr("x", x)
+          .attr("y", y - 20)
+          .attr("text-anchor", "middle")
+          .attr("font-size", "12px")
+          .attr("fill", "white")
+          .text(`인구수: ${d.인구수}`);
+      })
+      .on("mouseout", () => {
+        svg.selectAll(".tooltip").remove();
+      });
+
+    // Adding grid lines behind bars
+    svg.append("g")
+      .attr("class", "grid")
+      .attr("transform", `translate(0, ${height - margin.bottom})`)
+      .call(d3.axisBottom(xScale)
+        .tickSize(-height + margin.top + margin.bottom)
+        .tickFormat("")
+      )
+      .selectAll("line")
+      .attr("stroke", "#ccc")
+      .attr("stroke-dasharray", "2,2")
+      .attr("opacity", 0.5);  // Modified grid opacity
+
+    svg.append("g")
+      .attr("class", "grid")
+      .attr("transform", `translate(${margin.left}, 0)`)
+      .call(d3.axisLeft(yScale)
+        .tickSize(-width + margin.left + margin.right)
+        .tickFormat("")
+      )
+      .selectAll("line")
+      .attr("stroke", "#ccc")
+      .attr("stroke-dasharray", "2,2")
+      .attr("opacity", 0.5);  // Modified grid opacity
+
+    const legend = svg.append("g")
+      .attr("transform", `translate(${width - margin.right + 10}, ${margin.top})`) //legend edit
+      .attr("class", "legend");
+
+    const legendData = chartType === 'gender' ? Object.keys(genderColors) : Object.keys(ageColors);
+    legendData.forEach((key, i) => {
+      const legendRow = legend.append("g")
+        .attr("transform", `translate(0, ${i * 20})`);
+
+      legendRow.append("rect")
+        .attr("width", 15)
+        .attr("height", 15)
+        .attr("fill", chartType === 'gender' ? genderColors[key] : ageColors[key]);
+
+      legendRow.append("text")
+        .attr("x", 20)
+        .attr("y", 10)
+        .attr("text-anchor", "start")
+        .style("font-size", "12px")
+        .style("fill", "white")
+        .text(key);
+    });
+
+  }, [region, chartType]);
 
   return (
     <motion.div
@@ -60,10 +204,8 @@ const Services = () => {
       variants={variants}
       initial="initial"
       animate="animate"
-  
     >
       <motion.div className="textContainer" variants={variants}>
-        <p>인구 특성 시각화</p>
         <hr />
       </motion.div>
       <motion.div 
@@ -72,13 +214,13 @@ const Services = () => {
         style={{ marginTop: '-380px' }}
         >
         <div className="title">
-          <h1>
-            "<motion.b whileHover={{ color: "orange" }}>인구 특성</motion.b>은 의료접근성 지표에 
+        <h1 className="jua-regular">
+            "<motion.b className="jua-regular"  whileHover={{ color: "orange" }}>인구 특성</motion.b>은 의료접근성 지표에 
           </h1>
         </div>
         <div className="title">
-          <h1>
-            <motion.b whileHover={{ color: "orange" }}>필수적</motion.b>으로 들어가야할 요소이다."
+          <h1 className="jua-regular">
+            <motion.b className="jua-regular"  whileHover={{ color: "orange" }}>필수적</motion.b>으로 들어가야할 요소이다."
           </h1>
         </div>
       </motion.div>
@@ -107,34 +249,25 @@ const Services = () => {
           </MapContainer>
         </motion.div>
         <motion.div className="chartContainer" variants={variants}>
-        {region && (
-          <div>
-            <div className="buttonContainer">
-              <button className="chartButton" onClick={() => setChartType('age')}>나이별</button>
-              <button className="chartButton" onClick={() => setChartType('gender')}>성별</button>
+          {region && (
+            <div>
+              <div className="buttonContainer">
+                <button className="chartButton dark fast" onClick={() => setChartType('age')}>
+                  <span>나이별</span>
+                </button>
+                <button className="chartButton dark fast" onClick={() => setChartType('gender')}>
+                  <span>성별</span>
+                </button>
+              </div>
+              <svg ref={svgRef} width="1110" height="500"></svg> {/* 그래프 크기 조절 */}
             </div>
-            <BarChart
-              width={900}  // Increased chart width
-              height={500} // Increased chart height
-              data={chartType === 'age' ? ageData[region] : genderData[region]}
-              margin={{
-                top: 20, right: 50, left: 20, bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend wrapperStyle={{ fontSize: '18px' }} layout="vertical" align="right" verticalAlign="middle" />  // Move legend to top-right
-              <Bar dataKey="인구수" fill="#8884d8" />
-            </BarChart>
-          </div>
-        )}
+          )}
         </motion.div>
       </motion.div>
     </motion.div>
   );
 };
+
 
 const ageData = {
   "서울특별시": [
@@ -428,6 +561,25 @@ const genderData = {
     { name: '남성', 인구수: 338843 },
     { name: '여성', 인구수: 337967 }
   ]
+};
+const positions = {
+  "서울특별시": [37.5665, 126.9780],
+  "부산광역시": [35.1796, 129.0756],
+  "대구광역시": [35.8722, 128.6018],
+  "인천광역시": [37.4563, 126.7052],
+  "광주광역시": [35.1595, 126.8526],
+  "대전광역시": [36.3504, 127.3845],
+  "울산광역시": [35.5397, 129.3114],
+  "세종특별자치시": [36.4875, 127.2817],
+  "경기도": [37.2636, 127.0286],
+  "강원도": [37.8228, 128.1555],
+  "충청북도": [36.6358, 127.4913],
+  "충청남도": [36.5184, 126.8000],
+  "전라북도": [35.7175, 127.1530],
+  "전라남도": [34.8160, 126.4629],
+  "경상북도": [36.5758, 128.5056],
+  "경상남도": [35.4606, 128.2132],
+  "제주특별자치도": [33.4996, 126.5312]
 };
 
 export default Services;

@@ -21,7 +21,7 @@
     gap: 40px;
 
     @include mobile {
-      gap: 20px;
+      gap: 30px;
       text-align: center;
       align-items: center;
       margin-top: 70px;
@@ -29,15 +29,15 @@
 
     h1 {
       font-size: 100px;
-      line-height: 88px;
+      line-height: 98px;
 
       @include mobile {
-        font-size: 36px;
+        font-size: 56px;
       }
     }
 
     span {
-      font-weight: 300;
+      font-weight: 500;
     }
   }
 
