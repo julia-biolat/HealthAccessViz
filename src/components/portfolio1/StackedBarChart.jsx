@@ -65,7 +65,7 @@ const StackedBarChart = ({ data, stackOrder, onBarClick, previousData}) => { // 
 
     const drawBars = (group, key, delayMultiplier) => {
 
-      if(previousData.length !== 0 && previousData[0].항목 === data[0].항목){
+      if(previousData.length !== 0 && previousData[0].연령층 === data[0].연령층){
         return group.selectAll(`.${key}-rect`)
         .data(d => {
           const barData = series.find(s => s.key === key).find(v => v.data.항목 === d.항목);
@@ -132,7 +132,7 @@ const StackedBarChart = ({ data, stackOrder, onBarClick, previousData}) => { // 
       .duration(300)
       .style("opacity", 1); // 최종 투명도를 1로 설정
 
-    if(previousData.length !== 0 && previousData[0].항목 === data[0].항목){
+    if(previousData.length !== 0 && previousData[0].연령층 === data[0].연령층){
       // 카테고리 텍스트 애니메이션 추가
       groups.append("text")
       .attr("x", margin.left - 10)
