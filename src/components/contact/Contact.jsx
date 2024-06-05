@@ -55,9 +55,13 @@ const Contact = () => {
       whileInView="animate"
     >
       <motion.div className="textContainer" variants={variants}>
-        <motion.h1 variants={variants}>
-          마무리 멘트 샬롸롸 써주세엽
-        </motion.h1>
+      <motion.h1 className="jua-regular" variants={variants}>
+        여러분도 인구 특성을 반영한 의료 접근성 평가로 실질적 의료 서비스 수요를 충족시켜 보세요.
+      </motion.h1>
+      <motion.p className="description" variants={variants}>
+        지역별 인구 특성을 반영한 의료 접근성 평가를 통해, 우리는 각 지역의 실질적인 의료 서비스 수요를 충족시키는 방안을 마련할 수 있습니다. 보다 정확한 데이터를 기반으로 한 평가와 시각화는 공중 보건 정책의 효율성을 높이고, 모든 연령대와 성별에 맞춘 맞춤형 의료 서비스를 제공하는 데 중요한 역할을 할 것입니다. 따라서, 지속적인 연구와 데이터를 통한 정책 개선이 필요합니다. 여러분도 이 프로젝트를 통해 의료 접근성에 대한 이해를 높이고, 직접 시각화하여 확인해 보시기 바랍니다.
+      </motion.p>
+
         <motion.div className="item" variants={variants}>
           <h2>팀</h2>
           <span>Wacky Wombat</span>
@@ -66,9 +70,7 @@ const Contact = () => {
           <h2>팀 구성원</h2>
           <span>이지윤, 김슬미, 김혁, 김정우</span>
         </motion.div>
-        
       </motion.div>
-      
     </motion.div>
   );
 };

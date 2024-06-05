@@ -1,5 +1,4 @@
 @import "../../app.scss";
-
 .contact {
   height: 100%;
   max-width: 1366px;
@@ -19,25 +18,49 @@
     display: flex;
     flex-direction: column;
     gap: 40px;
+    text-align: left;
 
     @include mobile {
       gap: 30px;
-      text-align: center;
-      align-items: center;
+      text-align: left;
+      align-items: flex-start;
       margin-top: 70px;
     }
 
+    h3 {
+      font-size: 20px;
+      color: rgb(195, 183, 207);
+      letter-spacing: 2px;
+      font-family: "Jua", sans-serif;
+    }
+
+    h2 {
+      font-size: 30px;
+      color: rebeccapurple;
+      letter-spacing: 10px;
+      font-family: "Jua", sans-serif;
+    }
+
     h1 {
-      font-size: 100px;
-      line-height: 98px;
+      font-size: 70px;
+      line-height: 80px;
+      font-family: "Jua", sans-serif;
 
       @include mobile {
         font-size: 56px;
       }
     }
 
+    .description {
+      font-size: 18px;
+      color: rgb(195, 183, 207);
+      font-family: "Noto Sans KR", sans-serif;
+      font-weight: 300;
+    }
+
     span {
-      font-weight: 500;
+      font-weight: 300;
+      font-family: "Noto Sans KR", sans-serif;
     }
   }
 
@@ -49,7 +72,6 @@
       padding: 50px;
       width: 100%;
     }
-
 
     .phoneSvg {
       stroke: orange;
@@ -82,6 +104,8 @@
         background-color: orange;
         cursor: pointer;
         font-weight: 500;
+        font-family: "Noto Sans KR", sans-serif;
+
         @include mobile {
           padding: 10px;
         }

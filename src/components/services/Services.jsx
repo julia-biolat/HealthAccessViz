@@ -48,6 +48,8 @@ const variants = {
 const Services = () => {
   const [region, setRegion] = useState(null);
   const [chartType, setChartType] = useState('gender');
+  const [highlighted, setHighlighted] = useState(null);
+  const [initialRender, setInitialRender] = useState(true); // Initial render state
   const svgRef = useRef();
 
   const handleRegionClick = (region) => {
@@ -58,44 +60,44 @@ const Services = () => {
 
   useEffect(() => {
     if (!region) return;
-
+  
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
-
+  
     const width = 1000;  // 그래프 크기 조절
     const height = 500;
     const margin = { top: 20, right: 30, bottom: 40, left: 100 };  // 그래프 크기 조절
-
+  
     const xScale = d3.scaleBand()
       .domain(data.map(d => d.name))
       .range([margin.left, width - margin.right])
       .padding(0.2);
-
+  
     const yScale = d3.scaleLinear()
       .domain([0, d3.max(data, d => d.인구수)])
       .nice()
       .range([height - margin.bottom, margin.top]);
-
+  
     const colorScale = chartType === 'gender' ?
       d3.scaleOrdinal().domain(Object.keys(genderColors)).range(Object.values(genderColors)) :
       d3.scaleOrdinal().domain(Object.keys(ageColors)).range(Object.values(ageColors));
-
+  
     const xAxis = d3.axisBottom(xScale).tickSize(0).tickPadding(10);
     const yAxis = d3.axisLeft(yScale).ticks(5).tickSize(0).tickPadding(10);
-
+  
     svg.append("g")
       .attr("transform", `translate(0, ${height - margin.bottom})`)
       .call(xAxis)
       .selectAll("text")
       .style("font-size", chartType === 'gender' ? "20px" : "12px");
-
+  
     svg.append("g")
       .attr("transform", `translate(${margin.left}, 0)`)
       .call(yAxis)
       .selectAll("text")
       .style("font-size", "12px")
       .style("fill", "white");
-
+  
     svg.append("text")
       .attr("transform", `rotate(-90)`)
       .attr("y", margin.left - 90)  // 인구수 수정
@@ -104,50 +106,24 @@ const Services = () => {
       .style("text-anchor", "middle")
       .style("fill", "white")
       .text("인구수");
-
+  
+    // Initial rendering of the bars with transition only if it's the first render
     svg.selectAll(".bar")
       .data(data)
       .enter()
       .append("rect")
       .attr("class", "bar")
       .attr("x", d => xScale(d.name))
-      .attr("y", height - margin.bottom)
+      .attr("y", d => initialRender ? height - margin.bottom : yScale(d.인구수))
       .attr("width", xScale.bandwidth())
-      .attr("height", 0)
+      .attr("height", d => initialRender ? 0 : yScale(0) - yScale(d.인구수))
       .attr("fill", d => colorScale(chartType === 'gender' ? d.name : ageGroupMapping[d.name]))
       .attr("opacity", 0.7)
       .transition()
-      .duration(800)
+      .duration(initialRender ? 800 : 0)
       .attr("y", d => yScale(d.인구수))
       .attr("height", d => yScale(0) - yScale(d.인구수));
-
-    svg.selectAll(".bar")
-      .on("click", (event, d) => {
-        const [x, y] = d3.pointer(event);
-        svg.selectAll(".tooltip").remove();
-        svg.append("rect")
-          .attr("class", "tooltip")
-          .attr("x", x - 60)
-          .attr("y", y - 40)
-          .attr("width", 120)
-          .attr("height", 30)
-          .attr("fill", "rgba(0, 0, 0, 0.7)")
-          .attr("rx", 5)
-          .attr("ry", 5);
-
-        svg.append("text")
-          .attr("class", "tooltip")
-          .attr("x", x)
-          .attr("y", y - 20)
-          .attr("text-anchor", "middle")
-          .attr("font-size", "12px")
-          .attr("fill", "white")
-          .text(`인구수: ${d.인구수}`);
-      })
-      .on("mouseout", () => {
-        svg.selectAll(".tooltip").remove();
-      });
-
+  
     // Adding grid lines behind bars
     svg.append("g")
       .attr("class", "grid")
@@ -160,7 +136,7 @@ const Services = () => {
       .attr("stroke", "#ccc")
       .attr("stroke-dasharray", "2,2")
       .attr("opacity", 0.5);  // Modified grid opacity
-
+  
     svg.append("g")
       .attr("class", "grid")
       .attr("transform", `translate(${margin.left}, 0)`)
@@ -172,32 +148,47 @@ const Services = () => {
       .attr("stroke", "#ccc")
       .attr("stroke-dasharray", "2,2")
       .attr("opacity", 0.5);  // Modified grid opacity
-
+  
     const legend = svg.append("g")
       .attr("transform", `translate(${width - margin.right + 10}, ${margin.top})`) //legend edit
       .attr("class", "legend");
-
+  
     const legendData = chartType === 'gender' ? Object.keys(genderColors) : Object.keys(ageColors);
     legendData.forEach((key, i) => {
       const legendRow = legend.append("g")
-        .attr("transform", `translate(0, ${i * 20})`);
-
+        .attr("transform", `translate(0, ${i * 30})`) // Increased gap to 30
+        .on("mouseover", () => setHighlighted(key))
+        .on("mouseout", () => setHighlighted(null))
+        .on("click", () => {
+          // No interaction effect on click
+        });
+  
       legendRow.append("rect")
         .attr("width", 15)
         .attr("height", 15)
         .attr("fill", chartType === 'gender' ? genderColors[key] : ageColors[key]);
-
+  
       legendRow.append("text")
         .attr("x", 20)
-        .attr("y", 10)
+        .attr("y", 12)
         .attr("text-anchor", "start")
         .style("font-size", "12px")
         .style("fill", "white")
         .text(key);
     });
 
+    if (initialRender) setInitialRender(false); // After first render, disable transition
   }, [region, chartType]);
-
+  
+  useEffect(() => {
+    if (!region) return;
+  
+    const svg = d3.select(svgRef.current);
+    svg.selectAll(".bar")
+      .attr("opacity", d => (highlighted && highlighted !== (chartType === 'gender' ? d.name : ageGroupMapping[d.name])) ? 0.2 : 0.7);
+  
+  }, [highlighted]);
+  
   return (
     <motion.div
       className="services"
@@ -252,10 +243,10 @@ const Services = () => {
           {region && (
             <div>
               <div className="buttonContainer">
-                <button className="chartButton dark fast" onClick={() => setChartType('age')}>
+                <button className="chartButton dark fast" onClick={() => {setChartType('age'); setInitialRender(true);}}>
                   <span>나이별</span>
                 </button>
-                <button className="chartButton dark fast" onClick={() => setChartType('gender')}>
+                <button className="chartButton dark fast" onClick={() => {setChartType('gender'); setInitialRender(true);}}>
                   <span>성별</span>
                 </button>
               </div>
@@ -267,7 +258,6 @@ const Services = () => {
     </motion.div>
   );
 };
-
 
 const ageData = {
   "서울특별시": [
