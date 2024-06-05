@@ -5,7 +5,7 @@ import * as d3 from 'd3';
 const Sankey = () => {
   const svgRef = useRef();
   const [data, setData] = useState({ nodes: [], links: [] });
-  const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+  const margin = { top: 10, right: 150, bottom: 10, left: 10 };
   const height = 700;
   const width = 1200;
 
@@ -53,15 +53,15 @@ const Sankey = () => {
         const csvData = await response.text();
         const parsedData = d3.csvParse(csvData);
 
-        parsedData.slice(0, 15).forEach((row, index) => {
+        parsedData.slice(0, 12).forEach((row, index) => {
           const existingNode = nodes.find(node => node.name === row.항목);
 
           if (existingNode) {
-            links.push({ source: file.id - 1, target: existingNode.id, value: 15 - index });
+            links.push({ source: file.id - 1, target: existingNode.id, value: 12 - index });
           } else {
             const nodeId = nodes.length;
             nodes.push({ id: nodeId, name: row.항목 });
-            links.push({ source: file.id - 1, target: nodeId, value: 15 - index });
+            links.push({ source: file.id - 1, target: nodeId, value: 12 - index });
           }
         });
       }
@@ -80,15 +80,55 @@ const Sankey = () => {
 
     const sankeyGenerator = sankey()
       .nodeWidth(15)
-      .nodePadding(10) // 노드 간의 간격을 넓게 설정
+      .nodePadding(10)
       .extent([[margin.left, margin.top], [width - margin.right, height - margin.bottom]])
       .nodeId(d => d.id)
       .nodeAlign(sankeyJustify);
 
-    const { nodes, links } = sankeyGenerator({
+    let { nodes, links } = sankeyGenerator({
       nodes: data.nodes.map(d => Object.assign({}, d)),
       links: data.links.map(d => Object.assign({}, d)),
     });
+
+    // depth 1 노드의 높이를 다시 계산하고 링크 높이를 동기화
+    nodes.forEach(node => {
+      if (node.depth === 0) {
+        const outgoingLinks = links.filter(link => link.source.id === node.id);
+        const totalLinkHeight = d3.sum(outgoingLinks, link => link.width);
+        node.y1 = node.y0 + totalLinkHeight;
+      }
+      else if (node.depth === 1) {
+        const incomingLinks = links.filter(link => link.target.id === node.id);
+        const outgoingLinks = links.filter(link => link.source.id === node.id);
+        const totalIncomingHeight = d3.sum(incomingLinks, link => link.width);
+        const totalOutgoingHeight = d3.sum(outgoingLinks, link => link.width);
+        const minHeight = Math.min(totalIncomingHeight, totalOutgoingHeight);
+
+        if (totalIncomingHeight > minHeight) {
+          incomingLinks.forEach(link => {
+            link.width *= minHeight / totalIncomingHeight;
+            console.log(link)
+          });
+        }
+
+        if (totalOutgoingHeight > minHeight) {
+          outgoingLinks.forEach(link => {
+            link.width *= minHeight / totalOutgoingHeight;
+            console.log(link)
+          });
+        }
+
+        node.y1 = node.y0 + minHeight;
+      }
+      else if (node.depth === 2) {
+        const incomingLinks = links.filter(link => link.target.id === node.id);
+        const totalLinkHeight = d3.sum(incomingLinks, link => link.width);
+        node.y1 = node.y0 + totalLinkHeight;
+      }
+    });
+
+    // 새로운 노드 높이에 따라 링크 위치를 조정
+    sankeyGenerator.update({ nodes, links });
 
     // 링크를 그룹화
     const linkGroups = [];
@@ -229,9 +269,9 @@ const Sankey = () => {
       .attr("text-anchor", d => (d.x0 < width / 2 ? "start" : "end"))
       .attr("font-size", 12)
       .text(d => d.name);
-    }, [data]);
+  }, [data]);
 
-    return <svg ref={svgRef} width={width} height={height}></svg>;
-  };
-  
-  export default Sankey;
+  return <svg ref={svgRef} width={width} height={height}></svg>;
+};
+
+export default Sankey;
