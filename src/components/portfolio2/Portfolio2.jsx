@@ -19,16 +19,18 @@ const Portfolio2 = () => {
     damping: 30,
   });
 
-  const [selectedRegion, setSelectedRegion] = useState(null);
+  const [selectedRegion, setSelectedRegion] = useState([]);
   const [selectedDiseases, setSelectedDiseases] = useState([]);
+  const [correspondingSubjects, setCorrespondingSubjects] = useState([]);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState(null);
 
   const handleRegionChange = (region) => {
     setSelectedRegion(region);
   };
 
-  const handleDiseaseChange = (diseases) => {
+  const handleDiseaseChange = (diseases, subjects) => {
     setSelectedDiseases(diseases);
+    setCorrespondingSubjects(subjects);
   };
 
   const handleAgeGroupChange = (ageGroup) => {
@@ -47,13 +49,16 @@ const Portfolio2 = () => {
             <motion.div className="text-container">
             </motion.div>
             <div className="Controller">
-              
-                <SliderAge onAgeGroupChange={handleAgeGroupChange} />
-                <RegionSelector onRegionChange={handleRegionChange} />
-                <DiseaseSelector onDiseaseChange={handleDiseaseChange} />
-              
+              <SliderAge onAgeGroupChange={handleAgeGroupChange} />
+              <RegionSelector onRegionChange={handleRegionChange} />
+              <DiseaseSelector onDiseaseChange={handleDiseaseChange} />
             </div>
-            <Map />
+            <Map
+              selectedRegion={selectedRegion}
+              selectedAgeGroup={selectedAgeGroup}
+              selectedDiseases={selectedDiseases}
+              correspondingSubjects={correspondingSubjects}
+            />
           </div>
         </div>
       </section>

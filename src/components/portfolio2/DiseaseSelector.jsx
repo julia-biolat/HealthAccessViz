@@ -7,6 +7,7 @@ const DiseaseSelector = ({ onDiseaseChange }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredDiseases, setFilteredDiseases] = useState([]);
   const [selectedDiseases, setSelectedDiseases] = useState([]);
+  const [correspondingSubjects, setCorrespondingSubjects] = useState([]);
 
   useEffect(() => {
     const loadDiseases = async () => {
@@ -48,43 +49,64 @@ const DiseaseSelector = ({ onDiseaseChange }) => {
   useEffect(() => {
     const selectedDepartments = data.filter(d =>
       selectedDiseases.includes(d.질병)
-    ).map(d => d.진료과목);
+    ).map(d => d.진료과목명);
+    const Subjects = Array.from(new Set(selectedDepartments));
+    setCorrespondingSubjects(Subjects);
     onDiseaseChange(selectedDiseases, selectedDepartments);
   }, [selectedDiseases, data, onDiseaseChange]);
 
   return (
     <div>
-      <div className='diseasetitle'>
-        <h>질병 선택</h>
-      </div>
-      <div className="disease-selector">
-        <div className='Input'>
-          <input
-            type="text"
-            placeholder="Search disease..."
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-        </div>
-        
-        <div className="checklist" style={{ overflowY: 'scroll', maxHeight: '200px' }}>
-          {filteredDiseases.map((disease) => (
-            <div key={disease} className="checkbox-wrapper">
+      <div className='disease-subject'>
+        <div>
+          <div className='diseasetitle'>
+            <h>질병 선택</h>
+          </div>
+          <div className="disease-selector">
+            <div className='Input'>
               <input
-                type="checkbox"
-                id={disease}
-                value={disease}
-                onChange={handleCheckboxChange}
-                checked={selectedDiseases.includes(disease)}
+                type="text"
+                placeholder="Search disease..."
+                value={searchTerm}
+                onChange={handleSearchChange}
               />
-              <label htmlFor={disease}>{disease}</label>
             </div>
-          ))}
+            <div className="checklist" style={{ overflowY: 'scroll', maxHeight: '200px' }}>
+              {filteredDiseases.map((disease) => (
+                <div key={disease} className="checkbox-wrapper">
+                  <input
+                    type="checkbox"
+                    id={disease}
+                    value={disease}
+                    onChange={handleCheckboxChange}
+                    checked={selectedDiseases.includes(disease)}
+                  />
+                  <label htmlFor={disease}>{disease}</label>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className='diseasetitle'>
+            <h>진료 과목</h>
+          </div>
+          <div className="subject-list" style={{ overflowY: 'scroll', maxHeight: '200px' }}>
+            {correspondingSubjects.map((subject, index) => (
+              <div key={subject} className="subject-item" style={{ backgroundColor: getColor(index), color: 'white' }}>
+                {subject}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
-    
   );
+};
+
+const getColor = (index) => {
+  const colors = ['#FFDDC1', '#FFABAB', '#FFC3A0', '#FF677D', '#D4A5A5', '#392F5A', '#31A2AC', '#61C0BF', '#6B4226', '#D9BF77'];
+  return colors[index % colors.length];
 };
 
 export default DiseaseSelector;

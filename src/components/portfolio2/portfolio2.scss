@@ -85,6 +85,14 @@
       background-color: orange;
       height:30px;
       color: white;
+
+    }
+
+    .disease-subject{
+      display:flex;
+      flex-direction: row;
+      width: 100%;
+      background-color: white;
     }
     .disease-selector {
       border: 1px solid #ccc;
@@ -100,6 +108,12 @@
         color:black;
         height: 85%;
       }
+    }
+    .corresponding-subjects{
+      border: 1px solid #ccc;
+      background-color: white;
+      color:black;
+      height:100%
     }
     
   }

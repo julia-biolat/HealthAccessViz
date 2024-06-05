@@ -4,7 +4,6 @@
     margin: 10px;
     margin-bottom: 30px;
     position: relative; /* Ensure non-static position */
-    height:80%;
     svg {
       border: 1px solid #ccc;
     }
@@ -21,3 +20,27 @@
     font-family: "Noto Sans KR", sans-serif !important;
     margin-right: 5px !important; /* 버튼 간격 줄임 */
   } 
+  
+  /* Add this to your Map.scss file */
+  .map .info.legend {
+    text-align: left;
+    background-color: white;
+    color: black;
+  }
+  
+  .map .info.legend h4 {
+    margin-bottom: 5px;
+  }
+  
+  .map .info.legend i {
+    width: 18px;
+    height: 18px;
+    float: left;
+    margin-right: 8px;
+    opacity: 1;
+  }
+  
+  .map .info.legend div {
+    clear: both;
+  }
+  
