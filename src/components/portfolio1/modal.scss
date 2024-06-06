@@ -26,9 +26,17 @@
     color: #aaa;
     float: right;
     font-size: 28px;
-    font-weight: bold;
+    font-family: "Jua", sans-serif;
+    font-weight: 100;
+    font-style: normal;
   }
   
+  .jua-regular {
+    font-family: "Jua", sans-serif !important;
+    font-weight: 100;
+    font-style: normal;
+  }    
+
   .close:hover,
   .close:focus {
     color: black;

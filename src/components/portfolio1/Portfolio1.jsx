@@ -65,7 +65,7 @@ const Portfolio1 = () => {
   return (
     <div className="portfolio" ref={ref}>
       <div className="progress">
-        <h1>인구 특성별 주요 질병 분석</h1>
+        <h1 className="jua-regular">인구 특성별 주요 질병 분석</h1>
         <motion.div style={{ scaleX }} className="progressBar"></motion.div>
       </div>
       <section>

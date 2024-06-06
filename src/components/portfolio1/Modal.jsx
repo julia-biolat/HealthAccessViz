@@ -21,37 +21,40 @@ const Modal = ({ selectedItem, onClose }) => {
 
     const g = modalSvg.append("g").attr("transform", `translate(${width / 2 }, ${height / 2 - 50})`);
   
-  // 파이 차트 그리기
-  g.selectAll("path")
-    .data(pie(pieData))
-    .enter()
-    .append("path")
-    .attr("class", (d, i) => `slice slice-${i}`)
-    .attr("fill", (d, i) => (i === 0 ? "#B0E0E6" : "#4682B4"))
-    .each(function(d) {
-      this._current = { startAngle: 0, endAngle: 0 }; // 초기 상태 설정
-    })
-    .transition() // 트랜지션 시작
-    .duration(1000) // 애니메이션 지속 시간
-    .attrTween("d", function(d) {
-      const interpolate = d3.interpolate(this._current, d);
-      this._current = interpolate(0);
-      return function(t) {
-        return arc(interpolate(t));
-      };
-    });
-  
-  // 마우스 오버/아웃 이벤트 추가
-  g.selectAll("path")
-    .on("mouseover", function(event, d) {
-      d3.select(this).classed("hovered", true);
-      modalSvg.classed("hasHighlight", true);
-    })
-    .on("mouseout", function(event, d) {
-      d3.select(this).classed("hovered", false);
-      modalSvg.classed("hasHighlight", false);
-    })
-    .on("click", onClose);
+// 파이 차트 그리기
+g.selectAll("path")
+  .data(pie(pieData))
+  .enter()
+  .append("path")
+  .attr("class", (d, i) => `slice slice-${i}`)
+  .attr("fill", (d, i) => (i === 0 ? "#B0E0E6" : "#4682B4"))
+  .each(function(d) {
+    this._current = { startAngle: 0, endAngle: 0 }; // 초기 상태 설정
+  })
+  .transition() // 트랜지션 시작
+  .duration(1000) // 애니메이션 지속 시간
+  .attrTween("d", function(d) {
+    const interpolate = d3.interpolate(this._current, d);
+    this._current = interpolate(0);
+    return function(t) {
+      return arc(interpolate(t));
+    };
+  });
+
+// 마우스 오버/아웃 이벤트 추가
+g.selectAll("path")
+  .on("mouseover", function(event, d) {
+    const currentClass = d3.select(this).attr("class").split(' ').join('.');
+    modalSvg.selectAll(`.${currentClass}`).classed("hovered", true);
+    modalSvg.classed("hasHighlight", true);
+  })
+  .on("mouseout", function(event, d) {
+    const currentClass = d3.select(this).attr("class").split(' ').join('.');
+    modalSvg.selectAll(`.${currentClass}`).classed("hovered", false);
+    modalSvg.classed("hasHighlight", false);
+  })
+  .on("click", onClose);
+
 
     // 파이 차트 라벨 그리기
     const labelGroup = g.append("g").attr("class", "labels");
@@ -150,7 +153,6 @@ const textElement = modalSvg.append("text")
   .attr("x", width / 2)
   .attr("y", 370)
   .attr("text-anchor", "middle")
-  .attr("class", "close")
   .style("font-size", "17px");
 
 // 각 부분에 대한 tspan 요소 추가
@@ -159,6 +161,7 @@ description.forEach((part, i) => {
     .attr("x", i < 8 ? (i == 0 || i == 4 || i == 6 ? width / 2: null) : width/2)
     .attr("dy", i < 8 ? (i == 4 || i == 6 ? "1.2em" : 0) : i == 8 ? "1.8em":"1.2em")
     .attr("fill", part.highlight ? "yellow" : "white") // 특정 단어에 색상 적용
+    .attr("class", "jua-regular")
     .text(part.text)
     .attr("opacity", 0)
         .transition()
