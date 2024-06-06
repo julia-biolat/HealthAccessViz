@@ -3,6 +3,11 @@
   height:500px;
   margin-bottom: 20px;
   width: 100%;
+
+  .leaflet-container {
+    flex-grow: 1;
+  }
+
 }
 .report-box {
   margin-left: 20px;
@@ -11,30 +16,23 @@
   background-color: #fff;
   max-height: 500px;
   overflow-y: auto;
-}
 
-.report-box h4 {
-  margin-top: 0;
-}
+  h4 {
+    margin-top: 0;
+  }
 
-.report-box table {
-  width: 100%;
-  border-collapse: collapse;
-}
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
 
-.report-box table, .report-box th, .report-box td {
-  border: 1px solid #ddd;
+  table,  th,  td {
+    border: 1px solid #ddd;
+  }
+  th {
+    background-color: #f2f2f2;
+  }
 }
-
-.report-box th, .report-box td {
-  padding: 8px;
-  text-align: left;
-}
-
-.report-box th {
-  background-color: #f2f2f2;
-}
-
 
 .method-buttons {
   display: flex;
@@ -51,9 +49,7 @@
   cursor: pointer;
 }
 
-.leaflet-container {
-  flex-grow: 1;
-}
+
 
 .info.legend {
   text-align: left;
