@@ -22,15 +22,13 @@ const ageGroupToCSV = {
 
 const ageGroups = ["0~9세", "10~19세", "20~29세", "30~39세", "40~49세", "50~59세", "60~69세", "70~79세", "80~89세", "90~99세", "100세 이상"];
 
-const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, correspondingSubjects }) => {
+const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, correspondingSubjects, method }) => {
   const [geoData, setGeoData] = useState(SIDO_MAP);
   const [populationData, setPopulationData] = useState({});
   const [hospitalData, setHospitalData] = useState({});
   const [filteredScores, setFilteredScores] = useState({});
   const [minScore, setMinScore] = useState(0);
   const [maxScore, setMaxScore] = useState(0);
-  const [scoreMethod, setScoreMethod] = useState('oldMethod');
-  const [selectedRegionData, setSelectedRegionData] = useState(null);
 
   useEffect(() => {
     d3.csv('/data/시도01-09.csv').then(data => {
@@ -71,18 +69,17 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
       let maxScr = -Infinity;
 
       selectedRegion.forEach(region => {
-        const score = calculateScore(region, scoreMethod, selectedAgeGroup, correspondingSubjects);
+        const score = calculateScore(region, method, selectedAgeGroup, correspondingSubjects);
         scores[region] = score;
         if (score < minScr) minScr = score;
         if (score > maxScr) maxScr = score;
       });
 
-
       setFilteredScores(scores);
       setMinScore(minScr === Infinity ? 0 : minScr);
       setMaxScore(maxScr === -Infinity ? 0 : maxScr);
     }
-  }, [populationData, hospitalData, selectedAgeGroup, selectedRegion, scoreMethod, correspondingSubjects]);
+  }, [populationData, hospitalData, selectedAgeGroup, selectedRegion, method, correspondingSubjects]);
 
   const calculateScore = (region, method, ageGroup, subjects) => {
     if (method === 'oldMethod') {
@@ -95,25 +92,23 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
 
   const oldMethod = (region) => {
     if (!hospitalData[region] || !populationData[region]) {
-      console.error(`Missing data for oldMethod calculation: ${region}`); // Debugging
+      console.error(`Missing data for oldMethod calculation: ${region}`);
       return 0;
     }
 
     const totalHospitals = hospitalData[region].length;
     const totalPopulation = populationData[region]['total'];
-    console.log(`Old Method - Region: ${region}, Total Hospitals: ${totalHospitals}, Total Population: ${totalPopulation}`); // Debugging
     return totalPopulation ? (totalHospitals / totalPopulation) * 1000 : 0;
   };
 
   const refinedMethod = (region, ageGroup, subjects) => {
     if (!hospitalData[region] || !populationData[region]) {
-      console.error(`Missing data for refinedMethod calculation: ${region}`); // Debugging
+      console.error(`Missing data for refinedMethod calculation: ${region}`);
       return 0;
     }
 
     const relevantHospitals = hospitalData[region].filter(hospital => subjects.includes(hospital['진료과목코드명'])).length;
     const populationCount = populationData[region][ageGroup];
-    console.log(`Refined Method - Region: ${region}, Relevant Hospitals: ${relevantHospitals}, Population Count: ${populationCount}`); // Debugging
     return populationCount ? (relevantHospitals / populationCount) * 1000 : 0;
   };
 
@@ -183,32 +178,8 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
     return null;
   };
 
-  const handleFeatureClick = (feature, layer) => {
-    const region = feature.properties.CTP_KOR_NM;
-    const population = populationData[region] ? populationData[region].total : 0;
-    const hospitals = hospitalData[region] || [];
-    const hospitalCounts = {};
-
-    correspondingSubjects.forEach(subject => {
-      hospitalCounts[subject] = hospitals.filter(hospital => hospital['진료과목코드명'] === subject).length;
-    });
-
-    console.log(`Region: ${region}, Population: ${population}, Hospital Counts:`, hospitalCounts); // Debugging
-
-    setSelectedRegionData({
-      region,
-      population,
-      hospitalCounts
-    });
-    console.log(selectedRegionData)
-  };
-
   return (
     <div className="map-container">
-      <div className="method-buttons">
-      <button onClick={() => setScoreMethod('oldMethod')}>Old Method</button>
-        <button onClick={() => setScoreMethod('refinedMethod')}>Refined Method</button>
-      </div>
       <MapContainer center={[36.5, 127.5]} zoom={7} className="leaflet-container">
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -229,36 +200,10 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
                 className: 'leaflet-tooltip'
               }
             );
-
-            layer.on({
-              click: () => handleFeatureClick(feature, layer)
-            });
           }}
         />
         <Legend />
       </MapContainer>
-      {selectedRegionData && (
-        <div className="report-box">
-          <h4>Report for {selectedRegionData.region}</h4>
-          <p>Population: {selectedRegionData.population.toLocaleString()}</p>
-          <table>
-            <thead>
-              <tr>
-                <th>Subject</th>
-                <th>Number of Hospitals</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(selectedRegionData.hospitalCounts).map(([subject, count]) => (
-                <tr key={subject}>
-                  <td>{subject}</td>
-                  <td>{count}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
 };

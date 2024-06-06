@@ -62,12 +62,28 @@ const Portfolio2 = () => {
               <RegionSelector onRegionChange={handleRegionChange} />
               <DiseaseSelector onDiseaseChange={handleDiseaseChange} />
             </div>
-            <Map
-              selectedRegion={selectedRegion}
-              selectedAgeGroup={selectedAgeGroup}
-              selectedDiseases={selectedDiseases}
-              correspondingSubjects={correspondingSubjects}
-            />
+            <div className="maps-container">
+              <div className="map-wrapper">
+                <h4>Old Method</h4>
+                <Map
+                  selectedRegion={selectedRegion}
+                  selectedAgeGroup={selectedAgeGroup}
+                  selectedDiseases={selectedDiseases}
+                  correspondingSubjects={correspondingSubjects}
+                  method="oldMethod"
+                />
+              </div>
+              <div className="map-wrapper">
+                <h4>Refined Method</h4>
+                <Map
+                  selectedRegion={selectedRegion}
+                  selectedAgeGroup={selectedAgeGroup}
+                  selectedDiseases={selectedDiseases}
+                  correspondingSubjects={correspondingSubjects}
+                  method="refinedMethod"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
