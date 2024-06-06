@@ -40,7 +40,7 @@ const Portfolio2 = () => {
   return (
     <div className="portfolio" ref={ref}>
       <div className="progress">
-        <h1>의료 접근성 분석</h1>
+        <h1 className="jua-regular">의료 접근성 분석</h1>
         <motion.div style={{ scaleX }} className="progressBar"></motion.div>
       </div>
       <section>
