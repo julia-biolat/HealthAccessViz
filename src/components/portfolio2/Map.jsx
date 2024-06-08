@@ -1,24 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, GeoJSON, Tooltip, useMap } from 'react-leaflet';
+import React, { useEffect, useState, useRef } from 'react';
+import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './Map.scss';
 import SIDO_MAP from './SIDO_MAP_2022.json';
 import * as d3 from 'd3';
 import L from 'leaflet';
-
-const ageGroupToCSV = {
-  "0~9세": "young.csv",
-  "10~19세": "adolescents.csv",
-  "20~29세": "infants.csv",
-  "30~39세": "middle.csv",
-  "40~49세": "middle.csv",
-  "50~59세": "middle.csv",
-  "60~69세": "seniors.csv",
-  "70~79세": "seniors.csv",
-  "80~89세": "seniors.csv",
-  "90~99세": "seniors.csv",
-  "100세 이상": "seniors.csv"
-};
 
 const ageGroups = ["0~9세", "10~19세", "20~29세", "30~39세", "40~49세", "50~59세", "60~69세", "70~79세", "80~89세", "90~99세", "100세 이상"];
 
@@ -30,40 +16,73 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
   const [minScore, setMinScore] = useState(0);
   const [maxScore, setMaxScore] = useState(0);
 
+  const hasLoadedPopulationData = useRef(false);
+  const hasLoadedHospitalData = useRef(false);
+  const prevState = useRef({
+    selectedRegion: [],
+    selectedAgeGroup: '',
+    selectedDiseases: [],
+    correspondingSubjects: [],
+    method: ''
+  });
+
+  // Fetch population data only once
   useEffect(() => {
-    d3.csv('/data/시도01-09.csv').then(data => {
-      const population = {};
+    if (!hasLoadedPopulationData.current) {
+      d3.csv('/data/시도01-09.csv').then(data => {
+        const population = {};
 
-      data.forEach(row => {
-        const region = row['행정기관'];
-        population[region] = {};
+        data.forEach(row => {
+          const region = row['행정기관'];
+          population[region] = {};
 
-        let totalPopulation = 0;
-        ageGroups.forEach(ageGroup => {
-          const populationCount = parseInt(row[ageGroup], 10) || 0;
-          population[region][ageGroup] = populationCount;
-          totalPopulation += populationCount;
+          let totalPopulation = 0;
+          ageGroups.forEach(ageGroup => {
+            const populationCount = parseInt(row[ageGroup], 10) || 0;
+            population[region][ageGroup] = populationCount;
+            totalPopulation += populationCount;
+          });
+          population[region]['total'] = totalPopulation;
         });
-        population[region]['total'] = totalPopulation;
-      });
 
-      setPopulationData(population);
-    });
+        setPopulationData(population);
+        console.log("Population data loaded:", population);
+        hasLoadedPopulationData.current = true;
+      });
+    }
   }, []);
 
+  // Fetch hospital data only once
   useEffect(() => {
-    selectedRegion.forEach(region => {
-      d3.csv(`/data/시도/${region}.csv`).then(data => {
-        setHospitalData(prevData => ({
-          ...prevData,
-          [region]: data
-        }));
-      });
-    });
-  }, [selectedRegion]);
+    if (!hasLoadedHospitalData.current) {
+      d3.csv('/data/hospital_data.csv').then(data => {
+        const hospitalCounts = {};
+        data.forEach(row => {
+          const region = row['지역'];
+          const subject = row['진료과목'];
+          const count = parseInt(row['병원수'], 10);
+          if (!hospitalCounts[region]) {
+            hospitalCounts[region] = {};
+          }
+          hospitalCounts[region][subject] = count;
+        });
+        setHospitalData(hospitalCounts);
+        console.log("Hospital data loaded:", hospitalCounts);
+        hasLoadedHospitalData.current = true;
+      }).catch(error => console.error('Error loading hospital data:', error));
+    }
+  }, []);
 
+  // Recalculate scores when necessary
   useEffect(() => {
-    if (populationData && hospitalData && selectedAgeGroup && selectedRegion.length > 0) {
+    const shouldCalculateScores =
+      JSON.stringify(prevState.current.selectedRegion) !== JSON.stringify(selectedRegion) ||
+      prevState.current.selectedAgeGroup !== selectedAgeGroup ||
+      JSON.stringify(prevState.current.selectedDiseases) !== JSON.stringify(selectedDiseases) ||
+      JSON.stringify(prevState.current.correspondingSubjects) !== JSON.stringify(correspondingSubjects) ||
+      prevState.current.method !== method;
+
+    if (shouldCalculateScores && Object.keys(populationData).length > 0 && Object.keys(hospitalData).length > 0) {
       const scores = {};
       let minScr = Infinity;
       let maxScr = -Infinity;
@@ -78,8 +97,16 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
       setFilteredScores(scores);
       setMinScore(minScr === Infinity ? 0 : minScr);
       setMaxScore(maxScr === -Infinity ? 0 : maxScr);
+
+      prevState.current = {
+        selectedRegion,
+        selectedAgeGroup,
+        selectedDiseases,
+        correspondingSubjects,
+        method
+      };
     }
-  }, [populationData, hospitalData, selectedAgeGroup, selectedRegion, method, correspondingSubjects]);
+  }, [selectedRegion, selectedAgeGroup, selectedDiseases, correspondingSubjects, method, populationData, hospitalData]);
 
   const calculateScore = (region, method, ageGroup, subjects) => {
     if (method === 'oldMethod') {
@@ -91,25 +118,41 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
   };
 
   const oldMethod = (region) => {
-    if (!hospitalData[region] || !populationData[region]) {
-      console.error(`Missing data for oldMethod calculation: ${region}`);
+    if (!hospitalData[region]) {
+      console.error(`Missing hospital data for oldMethod calculation: ${region}`);
       return 0;
     }
 
-    const totalHospitals = hospitalData[region].length;
+    if (!populationData[region]) {
+      console.error(`Missing population data for oldMethod calculation: ${region}`);
+      return 0;
+    }
+
+    const totalHospitals = Object.values(hospitalData[region]).reduce((a, b) => a + b, 0);
     const totalPopulation = populationData[region]['total'];
-    return totalPopulation ? (totalHospitals / totalPopulation) * 1000 : 0;
+    const score = totalPopulation ? (totalHospitals / (totalPopulation / 100000)) : 0;
+    console.log(`Old Method - Region: ${region}, Total Hospitals: ${totalHospitals}, Total Population: ${totalPopulation}, Score: ${score}`);
+    return score;
   };
 
   const refinedMethod = (region, ageGroup, subjects) => {
-    if (!hospitalData[region] || !populationData[region]) {
-      console.error(`Missing data for refinedMethod calculation: ${region}`);
+    if (!hospitalData[region]) {
+      console.error(`Missing hospital data for refinedMethod calculation: ${region}`);
       return 0;
     }
 
-    const relevantHospitals = hospitalData[region].filter(hospital => subjects.includes(hospital['진료과목코드명'])).length;
+    if (!populationData[region]) {
+      console.error(`Missing population data for refinedMethod calculation: ${region}`);
+      return 0;
+    }
+
+    const relevantHospitals = Object.keys(hospitalData[region])
+      .filter(subject => subjects.includes(subject))
+      .reduce((sum, subject) => sum + hospitalData[region][subject], 0);
     const populationCount = populationData[region][ageGroup];
-    return populationCount ? (relevantHospitals / populationCount) * 1000 : 0;
+    const score = populationCount ? (relevantHospitals / (populationCount / 100000)) : 0;
+    console.log(`Refined Method - Region: ${region}, Age Group: ${ageGroup}, Relevant Hospitals: ${relevantHospitals}, Population Count: ${populationCount}, Score: ${score}`);
+    return score;
   };
 
   const getColor = (d) => {
@@ -165,6 +208,7 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
             '<i style="background:' + getColor(grades[i]) + '"></i> ' +
             grades[i].toFixed(2) + (grades[i + 1] ? '&ndash;' + grades[i + 1].toFixed(2) + '<br>' : '+');
         }
+       
         return div;
       };
 
@@ -191,15 +235,6 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
           onEachFeature={(feature, layer) => {
             const region = feature.properties.CTP_KOR_NM;
             const score = filteredScores[region] ? filteredScores[region] : 0;
-            layer.bindTooltip(
-              `<div>
-                <h4>${region}</h4>
-                <p>Score: ${score.toFixed(2)}</p>
-              </div>`, {
-                direction: 'auto',
-                className: 'leaflet-tooltip'
-              }
-            );
           }}
         />
         <Legend />
@@ -209,4 +244,3 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
 };
 
 export default Map;
-
