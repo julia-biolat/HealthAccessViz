@@ -56,7 +56,6 @@
     width: 100%;
     display: flex;
     justify-content: center; /* 왼쪽 정렬 */
-    margin-top: 100px; /* 맨 위로부터의 간격 조정 */
     margin-bottom: 40px; /* 슬라이더와 버튼 사이의 간격 */
     gap: 10px;
   }
@@ -64,7 +63,7 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    margin-top: 100px; /* 맨 위로부터의 간격 조정 */
+    margin-top: -20px; /* 맨 위로부터의 간격 조정 */
     gap: 10px;
 
     .regiontitle{
@@ -105,6 +104,7 @@
       background-color: white;
       padding:5px;
       height: 200px;
+      width: 300px;
       overflow-y: auto;
       flex-direction: column;
       .Input{
@@ -125,7 +125,7 @@
   }
 
   .text-container {
-    margin-top: 100px;
+    margin-top: 190px;
     text-align: center;
   }
 
@@ -150,3 +150,11 @@
   }
 }
 
+.formula-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px; // 이미지 사이의 간격을 설정합니다.
+  margin-top: 20px; // 텍스트 컨테이너와의 간격을 설정합니다.
+}

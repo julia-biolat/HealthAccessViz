@@ -5,6 +5,8 @@ import SliderAge from './SliderAge';
 import RegionSelector from './RegionSelector';
 import DiseaseSelector from './DiseaseSelector';
 import Map from './Map';
+import oldFormulaImage from './old수식.png';
+import refinedFormulaImage from './refined수식.png';
 
 const Portfolio2 = () => {
   const ref = useRef();
@@ -49,6 +51,10 @@ const Portfolio2 = () => {
             <motion.div className="text-container">
               인구 특성을 고려하느냐 안 하느냐는 의료 접근성 지수 평가에 매우 중요한 요소이다.
             </motion.div>
+            <div className="formula-container">
+              <img src={oldFormulaImage} alt="Old Method Formula" />
+              <img src={refinedFormulaImage} alt="Refined Method Formula" />
+            </div>
           </div>
         </div>
       </section>
