@@ -12,11 +12,6 @@
     color: orange;
     font-size: 36px;
 
-    @include mobile {
-      padding-top: calc(100vh - 100px);
-      font-size: 24px;
-    }
-
     .progressBar {
       height: 10px;
       background-color: white;
@@ -26,7 +21,7 @@
       font-family: "Jua", sans-serif;
       font-weight: 100;
       font-style: normal;
-    }    
+    }
   }
 
   .container {
@@ -44,13 +39,132 @@
       margin: auto;
       display: flex;
       flex-direction: column;
-      align-items: center; /* 중앙 정렬 */
-      gap: 10px; /* 간격 조정 */
+      align-items: center;
+      gap: 10px;
 
-      @include mobile {
-        flex-direction: column;
+      .controls {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-top: 50px;
+        margin-bottom: 0px;
+        gap: 10px;
+      }
+
+      .buttons {
+        display: flex;
+        justify-content: flex-start;
+        margin-bottom: -30px;
+        margin-left: 228px;
+
+        button {
+          padding: 5px 5px !important;
+          width: 50px !important;
+          border: 1px solid white !important;
+          border-radius: 3px !important;
+          background-color: transparent !important;
+          color: white !important;
+          cursor: pointer !important;
+          font-weight: 500 !important;
+          font-family: "Noto Sans KR", sans-serif !important;
+          margin-right: 5px !important;
+
+          &:last-child {
+            margin-right: 0 !important;
+          }
+
+          &:hover {
+            background-color: rgba(255, 255, 255, 0.1) !important;
+          }
+        }
+      }
+
+      .charts {
+        display: flex;
+        flex-direction: row;
         align-items: center;
-      }  
+        justify-content: space-around;
+        width: 100%;
+        height: calc(100% - 160px);
+      }
     }
+  }
+}
+
+@media (max-height: 800px) {
+  .portfolio .progress {
+    font-size: 32px;
+    padding-top: 40px;
+  }
+  .portfolio .container .wrapper {
+    gap: 8px;
+  }
+  .portfolio .container .wrapper .controls {
+    margin-top: 40px;
+  }
+  .portfolio .container .wrapper .buttons {
+    margin-bottom: -20px;
+    margin-left: 180px;
+
+    button {
+      width: 45px !important;
+      padding: 4px 4px !important;
+      font-size: 14px !important;
+    }
+  }
+  .portfolio .container .wrapper .charts {
+    height: calc(100% - 140px);
+  }
+}
+
+@media (max-height: 600px) {
+  .portfolio .progress {
+    font-size: 28px;
+    padding-top: 30px;
+  }
+  .portfolio .container .wrapper {
+    gap: 6px;
+  }
+  .portfolio .container .wrapper .controls {
+    margin-top: 30px;
+  }
+  .portfolio .container .wrapper .buttons {
+    margin-bottom: -15px;
+    margin-left: 150px;
+
+    button {
+      width: 40px !important;
+      padding: 3px 3px !important;
+      font-size: 12px !important;
+    }
+  }
+  .portfolio .container .wrapper .charts {
+    height: calc(100% - 120px);
+  }
+}
+
+@media (max-height: 400px) {
+  .portfolio .progress {
+    font-size: 24px;
+    padding-top: 20px;
+  }
+  .portfolio .container .wrapper {
+    gap: 4px;
+  }
+  .portfolio .container .wrapper .controls {
+    margin-top: 20px;
+  }
+  .portfolio .container .wrapper .buttons {
+    margin-bottom: -10px;
+    margin-left: 100px;
+
+    button {
+      width: 35px !important;
+      padding: 2px 2px !important;
+      font-size: 10px !important;
+    }
+  }
+  .portfolio .container .wrapper .charts {
+    height: calc(100% - 100px);
   }
 }

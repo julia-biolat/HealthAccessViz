@@ -7,18 +7,18 @@
     position: sticky;
     top: 0;
     left: 0;
-    padding-top: 50px;
+    padding-top: 5vh;
     text-align: center;
     color: orange;
-    font-size: 36px;
+    font-size: 3.6vh; /* 비율에 맞춘 폰트 크기 */
 
     @include mobile {
-      padding-top: calc(100vh - 100px);
-      font-size: 24px;
+      padding-top: calc(100vh - 10vh);
+      font-size: 2.4vh;
     }
 
     .progressBar {
-      height: 10px;
+      height: 1vh;
       background-color: white;
     }
 
@@ -34,7 +34,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     overflow: hidden;
 
     .wrapper {
@@ -44,8 +44,8 @@
       margin: auto;
       display: flex;
       flex-direction: column;
-      align-items: center; /* 중앙 정렬 */
-      gap: 20px; /* 간격 조정 */
+      align-items: center;
+      gap: 2vh; /* 비율에 맞춘 간격 */
 
       @include mobile {
         flex-direction: column;
@@ -55,50 +55,144 @@
       .controls {
         width: 100%;
         display: flex;
-        justify-content: center; /* 왼쪽 정렬 */
-        margin-top: 100px; /* 맨 위로부터의 간격 조정 */
-        margin-bottom: 20px; /* 슬라이더와 버튼 사이의 간격 */
-        gap: 10px;
+        justify-content: center;
+        margin-top: 5vh;
+        margin-bottom: 0;
+        gap: 1vh;
       }
 
       .buttons {
         display: flex;
-        justify-content: flex-start; /* 버튼 왼쪽 정렬 */
-        margin-bottom: -10px; /* 차트와의 간격 조정 */
-        margin-left: 228px; /* 버튼 그룹을 오른쪽으로 10px 이동 */
-        
+        justify-content: flex-start;
+        margin-bottom: -3vh;
+        margin-left: 22.8vh;
+
         button {
-          padding: 5px 5px !important; /* 버튼 크기 조정 */
-          width: 50px !important; /* 버튼 최소 가로 길이 설정 */
-          border: 1px solid white !important;
-          border-radius: 3px !important;
-          background-color: transparent !important; /* 버튼 배경색 투명으로 설정 */
+          padding: 0.5vh 0.5vh !important;
+          width: 5vh !important;
+          border: 0.1vh solid white !important;
+          border-radius: 0.3vh !important;
+          background-color: transparent !important;
           color: white !important;
           cursor: pointer !important;
           font-weight: 500 !important;
           font-family: "Noto Sans KR", sans-serif !important;
-          margin-right: 5px !important; /* 버튼 간격 줄임 */
+          margin-right: 0.5vh !important;
 
           &:last-child {
             margin-right: 0 !important;
           }
 
           &:hover {
-            background-color: rgba(255, 255, 255, 0.1) !important; /* 호버 시 약간의 배경색 */
+            background-color: rgba(255, 255, 255, 0.1) !important;
           }
         }
       }
 
       .charts {
         display: flex;
-        flex-direction: row; /* 가로로 배치 */
+        flex-direction: row;
         align-items: center;
         justify-content: space-around;
         width: 100%;
+        height: calc(100% - 16vh); /* 비율에 맞춘 높이 */
         @include mobile {
-          flex-direction: column; /* 모바일에서는 세로로 배치 */
+          flex-direction: column;
+          height: auto;
+        }
+
+        .chart {
+          flex: 1;
+          min-width: 0;
+          max-width: 100%;
+          height: 100%;
+          @include mobile {
+            width: 100%;
+            height: 30vh;
+          }
         }
       }
     }
+  }
+}
+
+@media (max-height: 800px) {
+  .portfolio .progress {
+    font-size: 3.2vh;
+    padding-top: 4vh;
+  }
+  .portfolio .container .wrapper {
+    gap: 1.5vh;
+  }
+  .portfolio .container .wrapper .controls {
+    margin-top: 4vh;
+    gap: 0.8vh;
+  }
+  .portfolio .container .wrapper .buttons {
+    margin-left: 18vh;
+    margin-bottom: -2vh;
+
+    button {
+      width: 4.5vh !important;
+      padding: 0.4vh 0.4vh !important;
+      font-size: 1.4vh !important;
+    }
+  }
+  .portfolio .container .wrapper .charts .chart {
+    height: 40vh;
+  }
+}
+
+@media (max-height: 600px) {
+  .portfolio .progress {
+    font-size: 2.8vh;
+    padding-top: 3vh;
+  }
+  .portfolio .container .wrapper {
+    gap: 1vh;
+  }
+  .portfolio .container .wrapper .controls {
+    margin-top: 3vh;
+    gap: 0.6vh;
+  }
+  .portfolio .container .wrapper .buttons {
+    margin-left: 15vh;
+    margin-bottom: -1.5vh;
+
+    button {
+      width: 4vh !important;
+      padding: 0.3vh 0.3vh !important;
+      font-size: 1.2vh !important;
+    }
+  }
+  .portfolio .container .wrapper .charts .chart {
+    height: 30vh;
+  }
+}
+
+@media (max-height: 480px) {
+  .portfolio .progress {
+    font-size: 2.4vh;
+    padding-top: 2vh;
+  }
+  .portfolio .container .wrapper {
+    gap: 0.5vh;
+  }
+  .portfolio .container .wrapper .controls {
+    margin-top: 2vh;
+    gap: 0.4vh;
+  }
+  .portfolio .container .wrapper .buttons {
+    margin-left: 10vh;
+    margin-bottom: -1vh;
+
+    button {
+      width: 3.5vh !important;
+      padding: 0.2vh 0.2vh !important;
+      font-size: 1vh !important;
+    }
+  }
+  .portfolio .container .wrapper .charts .chart {
+    height: 25vh;
   }
 }

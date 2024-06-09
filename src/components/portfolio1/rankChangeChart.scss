@@ -1,16 +1,29 @@
-.rank-arrow {
-  font-size: 15px;
-  font-weight: bold;
-}
+.rank-group {
+  .rank-box {
+    fill: #333;
+    stroke: #fff;
+    rx: 5;
+    ry: 5;
+  }
 
-.green {
-  fill: green;
-}
+  .rank-label {
+    fill: #ffffff;
+    text-anchor: start;
+  }
 
-.red {
-  fill: red;
-}
+  .rank-arrow {
+    text-anchor: end;
+  }
 
-.gray {
-  fill: gray;
+  &.green {
+    fill: green;
+  }
+
+  &.red {
+    fill: red;
+  }
+
+  &.gray {
+    fill: gray;
+  }
 }
