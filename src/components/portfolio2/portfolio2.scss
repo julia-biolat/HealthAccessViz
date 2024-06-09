@@ -28,6 +28,12 @@
       font-style: normal;
     }    
   }
+  .jua-regular3 {
+    font-family: "Jua", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+    font-size:23px;
+  }  
   .container {
     display: flex;
     align-items: center;
@@ -67,17 +73,20 @@
     gap: 10px;
 
     .regiontitle{
+      font-family: "Jua", sans-serif;
+      font-size: medium;
       border: 1px solid #ccc;
-      width: 300px;
+      width: 250px;
       background-color: orange;
       color: white;
     }
     .region-checklist{
+      font-family: "Jua", sans-serif;
       border: 1px solid #ccc;
       background-color: white;
       padding:5px;
       color: black;
-      width: 300px;
+      width: 100%;
       overflow-y: auto;
       margin-bottom: 10px;
       .checklist{
@@ -86,20 +95,25 @@
       }
     }
     .diseasetitle{
+      font-family: "Jua", sans-serif;
+      font-size: large;
       border: 1px solid #ccc;
       background-color: orange;
       height:30px;
       color: white;
+      min-width: 100px;
 
     }
 
     .disease-subject{
       display:flex;
+      min-width: 100px;
       flex-direction: row;
       width: 100%;
       background-color: white;
     }
     .disease-selector {
+      font-family: "Jua", sans-serif;
       border: 1px solid #ccc;
       background-color: white;
       padding:5px;
@@ -116,19 +130,31 @@
       }
     }
     .corresponding-subjects{
+      font-family: "Jua", sans-serif;
       border: 1px solid #ccc;
       background-color: white;
       color:black;
-      height:100%
+      height:100%;
+      
     }
     
   }
 
   .text-container {
-    margin-top: 190px;
+    margin-top: 160px;
     text-align: center;
   }
-
+  .text-container2 {
+    margin-top: 200px;
+    text-align: center;
+    font-size: 44px;
+  }
+  .jua-regular2 {
+    font-family: "Jua", sans-serif;
+    font-weight: 100;
+    font-style: normal;
+    font-size: 30px;
+  }   
   .maps-container {
     display: flex;
     justify-content: space-around;
@@ -152,9 +178,26 @@
 
 .formula-container {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px; // 이미지 사이의 간격을 설정합니다.
-  margin-top: 40px; // 텍스트 컨테이너와의 간격을 설정합니다.
+  flex-direction: column;
+  gap: 20px; // Adjust the gap between the formulas
+
+  .explanation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border:4px solid white;
+    text-align: center;
+    max-width: 1000px;
+
+    img {
+      transform: scale(0.8); // Scale the image to 80% of its original size
+    }
+
+    h1 {
+      font-size: 34px; // Increase font size
+      width: 90%; // Adjust width to fit the text content
+    }
+  }
 }

@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import * as d3Slider from 'd3-simple-slider';
 
-const ageGroups = ["0~9세","10~19세","20~29세","30~39세","40~49세","50~59세","60~69세","70~79세","80~89세","90~99세","100세 이상"];
+const ageGroupsDisplay = ["유아(0-9)", "청소년(10-19)","청년(20-39)","중년(40-59)","노년(60이상)"];
+const ageGroups = ["infants","adolescents","young","middle","seniors"];
 
 const SliderAge = ({ onAgeGroupChange }) => {
   const sliderRef = useRef(null);
@@ -16,7 +17,7 @@ const SliderAge = ({ onAgeGroupChange }) => {
         .max(ageGroups.length - 1)
         .step(1)
         .width(400)
-        .tickFormat(i => ageGroups[i])
+        .tickFormat(i => ageGroupsDisplay[i])
         .ticks(ageGroups.length)
         .default(0)
         .on('onchange', val => {
@@ -39,7 +40,7 @@ const SliderAge = ({ onAgeGroupChange }) => {
 
   return (
     <div>
-      <h3>선택된 연령층: {selectedAgeGroup}</h3>
+      <h4>Selected Age Group: {ageGroupsDisplay[ageGroups.indexOf(selectedAgeGroup)]}</h4>
       <div ref={sliderRef}></div>
     </div>
   );

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import * as d3 from 'd3';
 
 const RegionSelector = ({ onRegionChange }) => {
   const [selectedRegions, setSelectedRegions] = useState([]);
@@ -21,7 +22,7 @@ const RegionSelector = ({ onRegionChange }) => {
   return (
     <div>
       <div className='regiontitle'>
-        <h3>시도</h3>
+        <h3 className="jua-regular3">시도</h3>
       </div>
       <div className="region-checklist">
         <div className="checklist" style={{ columnCount: 2 }}>
@@ -40,6 +41,7 @@ const RegionSelector = ({ onRegionChange }) => {
         </div>
       </div>
     </div>
+    
   );
 };
 
