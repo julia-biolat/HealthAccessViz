@@ -49,11 +49,21 @@ const Portfolio2 = () => {
       <div className="container">
           <div className="wrapper">
             <motion.div className="text-container">
+              <h1 className="jua-regular">
               인구 특성을 고려하느냐 안 하느냐는 의료 접근성 지수 평가에 매우 중요한 요소이다.
+              </h1>
             </motion.div>
             <div className="formula-container">
               <img src={oldFormulaImage} alt="Old Method Formula" />
+              <h1 className="jua-regular">
+                old method: 질병, 인구 특성을 고려하지 않는다
+              </h1>
               <img src={refinedFormulaImage} alt="Refined Method Formula" />
+              <h1 className="jua-regular">
+                refined method:
+                선택된 질병들에 대응할 수 있는 병원만 표시하여 질병 특성을 고려하고
+                선택된 연령대의 인구만 활용하면서 연령대별 차이를 보인다
+              </h1>
             </div>
           </div>
         </div>
