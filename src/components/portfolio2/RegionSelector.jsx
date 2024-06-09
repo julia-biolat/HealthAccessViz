@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import * as d3 from 'd3';
+import { useState, useEffect } from 'react';
+import "./regionSelector.scss"
 
 const RegionSelector = ({ onRegionChange }) => {
   const [selectedRegions, setSelectedRegions] = useState([]);
@@ -41,7 +41,6 @@ const RegionSelector = ({ onRegionChange }) => {
         </div>
       </div>
     </div>
-    
   );
 };
 

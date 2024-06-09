@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import * as d3 from 'd3';
 
 const DiseaseSelector = ({ onDiseaseChange }) => {
@@ -60,7 +60,7 @@ const DiseaseSelector = ({ onDiseaseChange }) => {
       <div className='disease-subject'>
         <div>
           <div className='diseasetitle'>
-            <h>질병 선택</h>
+            <h4>질병 선택</h4>
           </div>
           <div className="disease-selector">
             <div className='Input'>
@@ -89,7 +89,7 @@ const DiseaseSelector = ({ onDiseaseChange }) => {
         </div>
         <div>
           <div className='diseasetitle'>
-            <h>진료 과목</h>
+            <h4>진료 과목</h4>
           </div>
           <div className="subject-list" style={{ overflowY: 'scroll', maxHeight: '200px' }}>
             {correspondingSubjects.map((subject, index) => (

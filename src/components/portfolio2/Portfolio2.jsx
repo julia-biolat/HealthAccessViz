@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import "./portfolio2.scss";
 import { motion, useScroll, useSpring } from "framer-motion";
 import SliderAge from './SliderAge';
@@ -26,18 +26,18 @@ const Portfolio2 = () => {
   const [correspondingSubjects, setCorrespondingSubjects] = useState([]);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState(null);
 
-  const handleRegionChange = (region) => {
+  const handleRegionChange = useCallback((region) => {
     setSelectedRegion(region);
-  };
+  }, []);
 
-  const handleDiseaseChange = (diseases, subjects) => {
+  const handleDiseaseChange = useCallback((diseases, subjects) => {
     setSelectedDiseases(diseases);
     setCorrespondingSubjects(subjects);
-  };
+  }, []);
 
-  const handleAgeGroupChange = (ageGroup) => {
+  const handleAgeGroupChange = useCallback((ageGroup) => {
     setSelectedAgeGroup(ageGroup);
-  };
+  }, []);
 
   return (
     <div className="portfolio" ref={ref}>
@@ -46,11 +46,11 @@ const Portfolio2 = () => {
         <motion.div style={{ scaleX }} className="progressBar"></motion.div>
       </div>
       <section>
-      <div className="container">
+        <div className="container">
           <div className="wrapper">
             <motion.div className="text-container">
               <h1 className="jua-regular">
-              인구 특성을 고려하느냐 안 하느냐는 의료 접근성 지수 평가에 매우 중요한 요소이다.
+                인구 특성을 고려하느냐 안 하느냐는 의료 접근성 지수 평가에 매우 중요한 요소이다.
               </h1>
             </motion.div>
             <div className="formula-container">
