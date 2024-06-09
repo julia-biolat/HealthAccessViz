@@ -26,8 +26,8 @@ const itemVariants = {
 };
 
 const Links = () => {
-  const items = ["Homepage", "Services", "Portfolio", "Contact", "About"];
-  const items1 = ["1. 문제제기", "2. 인구특성", "3. 의료접근성", "4. 결론", " "];
+  const items = ["Homepage", "Services", "Portfolio1","Portfolio2", "Contact", "About"];
+  const items1 = ["1. 문제제기", "2. 인구특성", "3. 인구별 질병 경향", "4. 의료접근성", "5. 결론", ""];
 
   return (
     <motion.div className="links" variants={variants}>
