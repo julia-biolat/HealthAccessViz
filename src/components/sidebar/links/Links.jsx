@@ -32,7 +32,7 @@ const Links = () => {
   return (
     <motion.div className="links" variants={variants}>
       {items.map((item, index) => (
-        <motion.a
+        <motion.a className="jua-regular"
           href={`#${item}`}
           key={item}
           variants={itemVariants}

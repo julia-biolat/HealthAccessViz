@@ -7,13 +7,18 @@
     position: sticky;
     top: 0;
     left: 0;
-    padding-top: 50px;
+    padding-top: 5vh;
     text-align: center;
     color: orange;
-    font-size: 36px;
+    font-size: 3.6vh; /* 비율에 맞춘 폰트 크기 */
+
+    @include mobile {
+      padding-top: calc(100vh - 10vh);
+      font-size: 2.4vh;
+    }
 
     .progressBar {
-      height: 10px;
+      height: 1vh;
       background-color: white;
     }
 
@@ -29,14 +34,14 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     overflow: hidden;
 
     .wrapper {
       max-width: 1366px;
       width: 100%;
       height: 100%;
-      margin: auto;
+      margin-top: 3vh !important;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -46,22 +51,20 @@
         width: 100%;
         display: flex;
         justify-content: center;
-        margin-top: 50px;
-        margin-bottom: 0px;
         gap: 10px;
       }
 
       .buttons {
         display: flex;
         justify-content: flex-start;
-        margin-bottom: -30px;
-        margin-left: 228px;
+        margin-bottom: 0;
+        margin-left: 22.8vh;
 
         button {
           padding: 5px 5px !important;
-          width: 50px !important;
-          border: 1px solid white !important;
-          border-radius: 3px !important;
+          width: 5vh !important;
+          border: 0.1vh solid white !important;
+          border-radius: 0.3vh !important;
           background-color: transparent !important;
           color: white !important;
           cursor: pointer !important;
@@ -85,7 +88,7 @@
         align-items: center;
         justify-content: space-around;
         width: 100%;
-        height: calc(100% - 160px);
+        height: calc(100% - 16vh); /* 비율에 맞춘 높이 */
       }
     }
   }
@@ -93,78 +96,90 @@
 
 @media (max-height: 800px) {
   .portfolio .progress {
-    font-size: 32px;
-    padding-top: 40px;
+    font-size: 3.2vh;
+    padding-top: 4vh;
   }
   .portfolio .container .wrapper {
-    gap: 8px;
+    gap: 1.5vh;
   }
   .portfolio .container .wrapper .controls {
-    margin-top: 40px;
+    margin-top: 8vh;
   }
   .portfolio .container .wrapper .buttons {
-    margin-bottom: -20px;
-    margin-left: 180px;
+    margin-bottom: -2vh;
+    margin-left: 18vh;
 
     button {
-      width: 45px !important;
-      padding: 4px 4px !important;
-      font-size: 14px !important;
+      width: 4.5vh !important;
+      padding: 0.4vh 0.4vh !important;
+      font-size: 1.4vh !important;
     }
   }
   .portfolio .container .wrapper .charts {
-    height: calc(100% - 140px);
+    height: calc(100% - 14vh);
+
+    .chart {
+      height: 40vh;
+    }
   }
 }
 
 @media (max-height: 600px) {
   .portfolio .progress {
-    font-size: 28px;
-    padding-top: 30px;
+    font-size: 2.8vh;
+    padding-top: 3vh;
   }
   .portfolio .container .wrapper {
-    gap: 6px;
+    gap: 1vh;
   }
   .portfolio .container .wrapper .controls {
-    margin-top: 30px;
+    margin-top: 6vh;
   }
   .portfolio .container .wrapper .buttons {
-    margin-bottom: -15px;
-    margin-left: 150px;
+    margin-bottom: -1.5vh;
+    margin-left: 15vh;
 
     button {
-      width: 40px !important;
-      padding: 3px 3px !important;
-      font-size: 12px !important;
+      width: 4vh !important;
+      padding: 0.3vh 0.3vh !important;
+      font-size: 1.2vh !important;
     }
   }
   .portfolio .container .wrapper .charts {
-    height: calc(100% - 120px);
+    height: calc(100% - 12vh);
+
+    .chart {
+      height: 30vh;
+    }
   }
 }
 
 @media (max-height: 400px) {
   .portfolio .progress {
-    font-size: 24px;
-    padding-top: 20px;
+    font-size: 2.4vh;
+    padding-top: 2vh;
   }
   .portfolio .container .wrapper {
-    gap: 4px;
+    gap: 0.5vh;
   }
   .portfolio .container .wrapper .controls {
-    margin-top: 20px;
+    margin-top: 4vh;
   }
   .portfolio .container .wrapper .buttons {
-    margin-bottom: -10px;
-    margin-left: 100px;
+    margin-bottom: -1vh;
+    margin-left: 10vh;
 
     button {
-      width: 35px !important;
-      padding: 2px 2px !important;
-      font-size: 10px !important;
+      width: 3.5vh !important;
+      padding: 0.2vh 0.2vh !important;
+      font-size: 1vh !important;
     }
   }
   .portfolio .container .wrapper .charts {
-    height: calc(100% - 100px);
+    height: calc(100% - 10vh);
+
+    .chart {
+      height: 25vh;
+    }
   }
 }
