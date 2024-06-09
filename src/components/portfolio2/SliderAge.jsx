@@ -39,7 +39,7 @@ const SliderAge = ({ onAgeGroupChange }) => {
 
   return (
     <div>
-      <h4>Selected Age Group</h4>
+      <h3>선택된 연령층: {selectedAgeGroup}</h3>
       <div ref={sliderRef}></div>
     </div>
   );

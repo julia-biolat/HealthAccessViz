@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import "./regionSelector.scss"
 
 const RegionSelector = ({ onRegionChange }) => {
   const [selectedRegions, setSelectedRegions] = useState([]);
