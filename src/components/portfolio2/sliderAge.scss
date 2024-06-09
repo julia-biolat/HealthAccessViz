@@ -1,0 +1,72 @@
+.slider-age-container {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* 원하는 간격으로 조정 */
+  margin-bottom: 10px;
+  margin-left: 40px;
+
+  h4 {
+    margin-top: -40px;
+    font-size: 18px;
+    color: #fff;
+    width: 220px;
+  }
+
+  div {
+    flex-grow: 1; /* 슬라이더가 가능한 공간을 차지하도록 설정 */
+  }
+
+  svg {
+    overflow: visible;
+  }
+
+  .parameter-value text {
+    font-size: 14px;
+    fill: #fff;
+  }
+
+  .axis text {
+    font-size: 12px;
+    fill: #fff;
+  }
+
+  .axis line,
+  .axis path {
+    stroke: #fff;
+  }
+
+  .track,
+  .track-inset,
+  .track-overlay {
+    stroke: #ddd;
+    stroke-width: 6px;
+    fill: none;
+    stroke-linecap: round; /* 둥근 끝을 추가 */
+  }
+
+  .handle {
+    fill: #007bff;
+    stroke: #fff;
+    stroke-opacity: 0.8;
+    stroke-width: 1.25px;
+  }
+
+  .handle:hover {
+    fill: #0056b3;
+  }
+
+  .tick line {
+    stroke: #fff;
+    stroke-width: 1px;
+  }
+
+  .tick text {
+    fill: #fff;
+    font-size: 12px;
+  }
+
+  .slider-label {
+    fill: #fff;
+    font-size: 12px;
+  }
+}

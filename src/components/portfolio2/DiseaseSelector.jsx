@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import * as d3 from 'd3';
+import "./diseaseSelector.scss"
 
 const DiseaseSelector = ({ onDiseaseChange }) => {
   const [data, setData] = useState([]);
@@ -58,40 +59,37 @@ const DiseaseSelector = ({ onDiseaseChange }) => {
   return (
     <div>
       <div className='disease-subject'>
-        <div>
+        <div className='disease-selector'>
           <div className='diseasetitle'>
-            <h className="jua-regular3">질병 선택</h>
+            <h5 className="jua-regular3">질병 선택</h5>
           </div>
-          <div className="disease-selector">
-            <div className='Input'>
-              <input
-                type="text"
-                placeholder="Search disease..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-              />
-            </div>
-            <div className="checklist" style={{ overflowY: 'scroll', maxHeight: '200px' }}>
-              {filteredDiseases.map((disease) => (
-                <div key={disease} className="checkbox-wrapper">
-                  <input
-                    type="checkbox"
-                    id={disease}
-                    value={disease}
-                    onChange={handleCheckboxChange}
-                    checked={selectedDiseases.includes(disease)}
-                  />
-                  <label htmlFor={disease}>{disease}</label>
-                </div>
-              ))}
-            </div>
+            <input
+              className='inputs'
+              type="text"
+              placeholder="알고싶은 질병을 검색하세요"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          <div className="checklist">
+            {filteredDiseases.map((disease) => (
+              <div key={disease} className="checkbox-wrapper">
+                <input
+                  type="checkbox"
+                  id={disease}
+                  value={disease}
+                  onChange={handleCheckboxChange}
+                  checked={selectedDiseases.includes(disease)}
+                />
+                <label htmlFor={disease}>{disease}</label>
+              </div>
+            ))}
           </div>
         </div>
-        <div>
+        <div className='subject-selector'>
           <div className='diseasetitle'>
-            <h className="jua-regular3">진료 과목</h>
+            <h5 className="jua-regular3">진료 과목</h5>
           </div>
-          <div className="subject-list" style={{ overflowY: 'scroll', maxHeight: '200px' }}>
+          <div className="subject-list">
             {correspondingSubjects.map((subject, index) => (
               <div key={subject} className="subject-item" style={{ backgroundColor: getColor(index), color: 'white' }}>
                 {subject}

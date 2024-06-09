@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import "./portfolio2.scss";
 import { motion, useScroll, useSpring } from "framer-motion";
 import SliderAge from './SliderAge';
@@ -26,18 +26,18 @@ const Portfolio2 = () => {
   const [correspondingSubjects, setCorrespondingSubjects] = useState([]);
   const [selectedAgeGroup, setSelectedAgeGroup] = useState(null);
 
-  const handleRegionChange = (region) => {
+  const handleRegionChange = useCallback((region) => {
     setSelectedRegion(region);
-  };
+  }, []);
 
-  const handleDiseaseChange = (diseases, subjects) => {
+  const handleDiseaseChange = useCallback((diseases, subjects) => {
     setSelectedDiseases(diseases);
     setCorrespondingSubjects(subjects);
-  };
+  }, []);
 
-  const handleAgeGroupChange = (ageGroup) => {
+  const handleAgeGroupChange = useCallback((ageGroup) => {
     setSelectedAgeGroup(ageGroup);
-  };
+  }, []);
 
   return (
     <div className="portfolio" ref={ref}>
@@ -50,23 +50,24 @@ const Portfolio2 = () => {
           <div className="wrapper">
             <motion.div className="text-container2">
               <h1 className="jua-regular2">
-              앞서 살펴보았듯이, 다양한 인구 특성을 적절히 반영하는 것은 의료 접근성 지수 평가에 매우 중요한 요소이다. 이에, 본 프로젝트에서는 아래와 같이 수정된 의료 접근성 수식을 제시한다.
+                앞서 살펴보았듯이, 다양한 인구 특성을 적절히 반영하는 것은 의료 접근성 지수 평가에 매우 중요한 요소이다. 
+                <br></br>이에, 본 프로젝트에서는 아래와 같이 수정된 의료 접근성 수식을 제시한다.
               </h1>
             </motion.div>
             <div className="formula-container">
               <div className="explanation">
                 <img src={oldFormulaImage} alt="Old Method Formula" />
-                <h1 className="jua-regular">
-                  old method: 질병, 인구 특성을 고려하지 않는다
-                </h1>
+                <h2 className="jua-regular">
+                  * <span className="strong">old method</span>: 질병, 인구 특성을 고려하지 않는다
+                </h2>
               </div>
               <div className="explanation">
                 <img src={refinedFormulaImage} alt="Refined Method Formula" />
-                <h1 className="jua-regular">
-                  refined method:
+                <h2 className="jua-regular">
+                  * <span className="strong">refined method</span>:
                   선택된 질병들에 대응할 수 있는 병원만 표시하여 질병 특성을 고려하고
-                  선택된 연령대의 인구만 활용하면서 연령대별 차이를 보인다
-                </h1>
+                  <br></br>선택된 연령대의 인구만 활용하면서 연령대별 차이를 보인다
+                </h2>
               </div>
             </div>
           </div>
@@ -77,14 +78,16 @@ const Portfolio2 = () => {
           <div className="wrapper">
             <motion.div className="text-container2">
             </motion.div>
-            <div className="Controller">
+            <div className="controller">
               <SliderAge onAgeGroupChange={handleAgeGroupChange} />
-              <RegionSelector onRegionChange={handleRegionChange} />
-              <DiseaseSelector onDiseaseChange={handleDiseaseChange} />
+              <div className="selector-container">
+                <RegionSelector onRegionChange={handleRegionChange} />
+                <DiseaseSelector onDiseaseChange={handleDiseaseChange} />
+              </div>
             </div>
             <div className="maps-container">
               <div className="map-wrapper">
-                <h4>Old Method</h4>
+                <h4 className="strong">Old Method</h4>
                 <Map
                   selectedRegion={selectedRegion}
                   selectedAgeGroup={selectedAgeGroup}
@@ -94,7 +97,7 @@ const Portfolio2 = () => {
                 />
               </div>
               <div className="map-wrapper">
-                <h4>Refined Method</h4>
+                <h4 className="strong">Refined Method</h4>
                 <Map
                   selectedRegion={selectedRegion}
                   selectedAgeGroup={selectedAgeGroup}

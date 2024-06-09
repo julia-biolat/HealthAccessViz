@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import * as d3 from 'd3';
+import { useState, useEffect } from 'react';
+import "./regionSelector.scss";
 
 const RegionSelector = ({ onRegionChange }) => {
   const [selectedRegions, setSelectedRegions] = useState([]);
@@ -20,12 +20,12 @@ const RegionSelector = ({ onRegionChange }) => {
   }, [selectedRegions, onRegionChange]);
 
   return (
-    <div>
+    <div className="region-selector">
       <div className='regiontitle'>
-        <h3 className="jua-regular3">시도</h3>
+        <h3 className="jua-regular3">시/도</h3>
       </div>
       <div className="region-checklist">
-        <div className="checklist" style={{ columnCount: 2 }}>
+        <div className="checklist">
           {regions.map((region) => (
             <div key={region} className="checkbox-wrapper">
               <input
@@ -41,7 +41,6 @@ const RegionSelector = ({ onRegionChange }) => {
         </div>
       </div>
     </div>
-    
   );
 };
 

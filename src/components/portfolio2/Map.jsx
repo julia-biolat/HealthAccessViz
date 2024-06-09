@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { MapContainer, TileLayer, GeoJSON, Tooltip, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './Map.scss';
 import SIDO_MAP from './SIDO_MAP_2022.json';
@@ -9,12 +9,13 @@ import L from 'leaflet';
 const ageGroups = ["infants", "adolescents", "young", "middle", "seniors"];
 
 const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, correspondingSubjects, method }) => {
-  const [geoData, setGeoData] = useState(SIDO_MAP);
+  const [geoData] = useState(SIDO_MAP);
   const [populationData, setPopulationData] = useState({});
   const [hospitalData, setHospitalData] = useState({});
   const [filteredScores, setFilteredScores] = useState({});
   const [minScore, setMinScore] = useState(0);
   const [maxScore, setMaxScore] = useState(0);
+  const [key, setKey] = useState(0);
 
   const hasLoadedPopulationData = useRef(false);
   const hasLoadedHospitalData = useRef(false);
@@ -70,6 +71,53 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
     }
   }, []);
 
+  const calculateScore = useCallback((region, method, ageGroup, subjects) => {
+    if (method === 'oldMethod') {
+      return oldMethod(region);
+    } else if (method === 'refinedMethod') {
+      return refinedMethod(region, ageGroup, subjects);
+    }
+    return 0;
+  }, [hospitalData, populationData]);
+
+  const oldMethod = useCallback((region) => {
+    if (!hospitalData[region]) {
+      console.error(`Missing hospital data for oldMethod calculation: ${region}`);
+      return 0;
+    }
+
+    if (!populationData[region]) {
+      console.error(`Missing population data for oldMethod calculation: ${region}`);
+      return 0;
+    }
+
+    const totalHospitals = Object.values(hospitalData[region]).reduce((a, b) => a + b, 0);
+    const totalPopulation = Object.values(populationData[region]).reduce((a, b) => a + b, 0);
+    const score = totalPopulation ? (totalHospitals / (totalPopulation / 100000)) : 0;
+    console.log(`Old Method - Region: ${region}, Total Hospitals: ${totalHospitals}, Total Population: ${totalPopulation}, Score: ${score}`);
+    return score;
+  }, [hospitalData, populationData]);
+
+  const refinedMethod = useCallback((region, ageGroup, subjects) => {
+    if (!hospitalData[region]) {
+      console.error(`Missing hospital data for refinedMethod calculation: ${region}`);
+      return 0;
+    }
+
+    if (!populationData[region]) {
+      console.error(`Missing population data for refinedMethod calculation: ${region}`);
+      return 0;
+    }
+
+    const relevantHospitals = Object.keys(hospitalData[region])
+      .filter(subject => subjects.includes(subject))
+      .reduce((sum, subject) => sum + hospitalData[region][subject], 0);
+    const populationCount = populationData[region][ageGroup];
+    const score = populationCount ? (relevantHospitals / (populationCount / 100000)) : 0;
+    console.log(`Refined Method - Region: ${region}, Age Group: ${ageGroup}, Relevant Hospitals: ${relevantHospitals}, Population Count: ${populationCount}, Score: ${score}`);
+    return score;
+  }, [hospitalData, populationData]);
+
   useEffect(() => {
     const shouldCalculateScores =
       JSON.stringify(prevState.current.selectedRegion) !== JSON.stringify(selectedRegion) ||
@@ -101,55 +149,10 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
         correspondingSubjects,
         method
       };
+
+      setKey(prevKey => prevKey + 1);
     }
-  }, [selectedRegion, selectedAgeGroup, selectedDiseases, correspondingSubjects, method, populationData, hospitalData]);
-
-  const calculateScore = (region, method, ageGroup, subjects) => {
-    if (method === 'oldMethod') {
-      return oldMethod(region);
-    } else if (method === 'refinedMethod') {
-      return refinedMethod(region, ageGroup, subjects);
-    }
-    return 0;
-  };
-
-  const oldMethod = (region) => {
-    if (!hospitalData[region]) {
-      console.error(`Missing hospital data for oldMethod calculation: ${region}`);
-      return 0;
-    }
-
-    if (!populationData[region]) {
-      console.error(`Missing population data for oldMethod calculation: ${region}`);
-      return 0;
-    }
-
-    const totalHospitals = Object.values(hospitalData[region]).reduce((a, b) => a + b, 0);
-    const totalPopulation = Object.values(populationData[region]).reduce((a, b) => a + b, 0);
-    const score = totalPopulation ? (totalHospitals / (totalPopulation / 100000)) : 0;
-    console.log(`Old Method - Region: ${region}, Total Hospitals: ${totalHospitals}, Total Population: ${totalPopulation}, Score: ${score}`);
-    return score;
-  };
-
-  const refinedMethod = (region, ageGroup, subjects) => {
-    if (!hospitalData[region]) {
-      console.error(`Missing hospital data for refinedMethod calculation: ${region}`);
-      return 0;
-    }
-
-    if (!populationData[region]) {
-      console.error(`Missing population data for refinedMethod calculation: ${region}`);
-      return 0;
-    }
-
-    const relevantHospitals = Object.keys(hospitalData[region])
-      .filter(subject => subjects.includes(subject))
-      .reduce((sum, subject) => sum + hospitalData[region][subject], 0);
-    const populationCount = populationData[region][ageGroup];
-    const score = populationCount ? (relevantHospitals / (populationCount / 100000)) : 0;
-    console.log(`Refined Method - Region: ${region}, Age Group: ${ageGroup}, Relevant Hospitals: ${relevantHospitals}, Population Count: ${populationCount}, Score: ${score}`);
-    return score;
-  };
+  }, [selectedRegion, selectedAgeGroup, selectedDiseases, correspondingSubjects, method, populationData, hospitalData, calculateScore]);
 
   const getColor = (d) => {
     const range = maxScore - minScore;
@@ -226,12 +229,18 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         <GeoJSON
+          key={key}
           data={geoData}
           style={style}
           onEachFeature={(feature, layer) => {
             const region = feature.properties.CTP_KOR_NM;
             const score = filteredScores[region] ? filteredScores[region] : 0;
-            layer.bindPopup(`<b>${region}</b><br>Score: ${score.toFixed(2)}`);
+            layer.bindTooltip(`<b>${region}</b><br>Score: ${score.toFixed(2)}`, { sticky: true });
+            layer.on({
+              click: () => {
+                layer.bindPopup(`<b>${region}</b><br>Score: ${score.toFixed(2)}`).openPopup();
+              }
+            });
           }}
         />
         <Legend />
@@ -241,4 +250,3 @@ const Map = ({ selectedRegion, selectedAgeGroup, selectedDiseases, corresponding
 };
 
 export default Map;
-

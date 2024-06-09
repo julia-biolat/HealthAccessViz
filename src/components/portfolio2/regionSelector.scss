@@ -1,0 +1,48 @@
+.region-selector {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #2c3e50; /* 다크 블루 그레이 배경 */
+    border-radius: 8px;
+    color: #ecf0f1; /* 밝은 글씨 색상 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 210px;
+  
+    .regiontitle {
+        font-size: 1.4em;
+        color: #ecf0f1; /* 밝은 글씨 색상 */
+        background-color:cornflowerblue; /* 백그라운드 컬러 변경 */
+        padding: 5px;
+        border: none; /* Border 제거 */
+        text-align: center; /* 가운데 정렬 */
+        border-radius: 8px 8px 0 0; /* 상단 모서리 둥글게 */
+    }
+  
+    .region-checklist {
+      width: 100%;
+      margin-top: 10px;
+  
+      .checklist {
+        column-count: 6;
+        column-gap: 40px;
+        padding-top: 17px;
+        padding-left: 20px;
+        padding-right: 20px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #34495e; /* 어두운 배경 */
+        height: 120px;
+        overflow-y: auto;
+      }
+  
+      .checkbox-wrapper {
+        margin-bottom: 15px;
+        color: #ecf0f1; /* 밝은 글씨 색상 */
+        
+        input[type="checkbox"] {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+  
