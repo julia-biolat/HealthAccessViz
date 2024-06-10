@@ -226,7 +226,8 @@ const Sankey = () => {
         if (group) {
           highlightGroup(group, true);
           tooltip.transition().duration(200).style("opacity", .9);
-          tooltip.html(`그룹 정보: ${group.links.map(l => `${l.source.name} → ${l.target.name}`).join(", ")}<br>총 값: ${d3.sum(group.links, l => l.value)}`)
+          tooltip.html(`그룹 정보: ${group.links[0].target.name}<br>${group.links.map(l => 
+            `${l.target.name}`).join(",<br>").slice(group.links[0].target.name.length+1) }`)
             .style("left", (event.pageX + 5) + "px")
             .style("top", (event.pageY - 28) + "px");
         }
